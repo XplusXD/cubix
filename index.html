@@ -2372,20 +2372,36 @@ async function adminSearchUser() {
         if (query.toUpperCase() === sid || query.toLowerCase() === (d.nick || '').toLowerCase()) { found = d; foundUid = child.key; }
     });
     if (!found) { res.innerHTML = '<p style="color:#555;font-size:13px;">Игрок не найден.</p>'; return; }
+
+    // ── Проверяем активный игровой бан ──
+    const gameBanSnap = await db.ref('playerBans/' + foundUid).once('value');
+    const gameBanData = gameBanSnap.val();
+    const hasActiveGameBan = gameBanData && gameBanData.gameBanUntil && gameBanData.gameBanUntil > Date.now();
+
     const isBanned = found.isBannedSite === true, isAdm = found.isAdmin === true;
     const avIdx = found.avatarIndex ?? -1;
     const avItem4 = getAvatarById(String(avIdx));
     const avHtml = avItem4
         ? `<img src="${getAvatarUrl(avItem4)}" style="width:100%;height:100%;object-fit:contain;background:#111;">`
         : '👤';
+
+    const gameBanInfo = hasActiveGameBan
+        ? `<div style="background:rgba(241,196,15,0.1);border:1px solid #f1c40f;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:12px;color:#f1c40f;">
+             ⏱ Игровой бан до ${new Date(gameBanData.gameBanUntil).toLocaleString('ru-RU')}<br>
+             Причина: ${esc(gameBanData.gameBanReason || '—')}
+           </div>`
+        : '';
+
     res.innerHTML = `<div class="user-row">
         <div class="user-av">${avHtml}</div>
         <div class="user-info">
             <div class="user-nick-row">${esc(found.nick)}
                 ${isBanned ? '<span style="background:rgba(231,76,60,0.2);border:1px solid #e74c3c;color:#e74c3c;font-size:10px;padding:2px 7px;border-radius:10px;margin-left:6px;">⛔ БАН</span>' : ''}
+                ${hasActiveGameBan ? '<span style="background:rgba(241,196,15,0.2);border:1px solid #f1c40f;color:#f1c40f;font-size:10px;padding:2px 7px;border-radius:10px;margin-left:6px;">⏱ ИГРОВОЙ БАН</span>' : ''}
                 ${isAdm   ? '<span style="background:rgba(241,196,15,0.2);border:1px solid #f1c40f;color:#f1c40f;font-size:10px;padding:2px 7px;border-radius:10px;margin-left:6px;">👑 АДМИН</span>' : ''}
             </div>
             <div class="user-meta">${shortId(foundUid)} · ${esc(found.email || '')}</div>
+            ${gameBanInfo}
         </div>
         <div class="user-actions">
             ${isBanned
@@ -2394,7 +2410,9 @@ async function adminSearchUser() {
             ${isAdm
                 ? `<button class="ua-btn ua-btn-gray" onclick="setAdminRole('${foundUid}',false)">Снять админа</button>`
                 : `<button class="ua-btn ua-btn-gold" onclick="setAdminRole('${foundUid}',true)">👑 Сделать админом</button>`}
-            <button class="ua-btn ua-btn-gold" style="background:#f1c40f;" onclick="openGameBanModal('${foundUid}','${esc(found.nick)}')">⏱ Бан в игре</button>
+            ${hasActiveGameBan
+                ? `<button class="ua-btn ua-btn-green" onclick="removeGameBan('${foundUid}')">✅ Разбанить в игре</button>`
+                : `<button class="ua-btn ua-btn-gold" style="background:#f1c40f;" onclick="openGameBanModal('${foundUid}','${esc(found.nick)}')">⏱ Бан в игре</button>`}
             ${found.isSupporter
                 ? `<button class="ua-btn ua-btn-gray" onclick="setSupporterRole('${foundUid}',false)">🍃 Снять саппорта</button>`
                 : `<button class="ua-btn" style="background:#2ecc71;color:black;" onclick="setSupporterRole('${foundUid}',true)">🍃 Сделать саппортом</button>`}
