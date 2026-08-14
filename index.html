@@ -70,6 +70,24 @@
         .modal-close-btn { position: absolute; top: 12px; right: 14px; background: rgba(255,255,255,0.06); border: none; color: #888; font-size: 20px; cursor: pointer; border-radius: 8px; padding: 4px 10px; transition: 0.2s; }
         .modal-close-btn:hover { background: rgba(255,255,255,0.14); color: white; }
         .mod-badge { display: inline-block; background: red; color: white; border-radius: 50%; font-size: 12px; width: 20px; height: 20px; line-height: 20px; text-align: center; margin-left: 6px; vertical-align: middle; }
+        .consent-check {
+            display: flex; align-items: flex-start; gap: 10px;
+            cursor: pointer; font-size: 13px; color: #888; line-height: 1.4;
+            margin: 10px 0 14px; user-select: none;
+        }
+        .consent-check input[type="checkbox"] { display: none; }
+        .consent-box {
+            flex-shrink: 0; width: 18px; height: 18px; margin-top: 1px;
+            border: 2px solid #333; border-radius: 5px; position: relative; transition: 0.2s;
+        }
+        .consent-check input:checked + .consent-box { background: #3498db; border-color: #3498db; }
+        .consent-check input:checked + .consent-box::after {
+            content: ''; position: absolute; left: 5px; top: 1px; width: 5px; height: 9px;
+            border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg);
+        }
+        .consent-text a { color: #7c9cff; text-decoration: underline; }
+        .consent-text a:hover { color: #a9bdff; }
+        .button:disabled { opacity: 0.45; cursor: not-allowed; filter: grayscale(0.3); }
 
         /* ── КНОПКИ ЯЗЫКА В ПРОФИЛЕ ── */
         .lang-btn-active {
@@ -760,7 +778,12 @@
                 <input type="password" id="authPass" placeholder="Пароль">
                 <div class="cf-turnstile" id="turnstile-login" data-sitekey="0x4AAAAAADjhI9HYLYIg690z" data-theme="dark"></div>
                 <button class="button" style="width:100%" onclick="login()">Войти</button>
-                <button id="google-login-btn" class="button" style="background:#4285F4;border-color:#4285F4;color:white;width:100%;font-size:16px;" onclick="loginGoogle()">Войти через Google</button>
+                <button id="google-login-btn" class="button" style="background:#4285F4;border-color:#4285F4;color:white;width:100%;font-size:16px;" onclick="loginGoogle()" disabled>Войти через Google</button>
+                <label class="consent-check" id="google-consent-label">
+                    <input type="checkbox" id="googleConsent" onchange="onGoogleConsentChange(this.checked)">
+                    <span class="consent-box"></span>
+                    <span class="consent-text" id="google-consent-text"></span>
+                </label>
                 <button id="forgot-pass-btn" class="auth-link" onclick="showForm('reset-form')">Забыл пароль?</button>
                 <button id="no-account-btn" class="auth-link" onclick="showForm('reg-form')">Нет аккаунта? Регистрация</button>
             </div>
@@ -771,15 +794,12 @@
                 <input type="email" id="regEmail" placeholder="Email">
                 <input type="password" id="regPass" placeholder="Пароль (мин. 6 символов)">
                 <div class="cf-turnstile" id="turnstile-reg" data-sitekey="0x4AAAAAADjhI9HYLYIg690z" data-theme="dark"></div>
-                <!-- СОГЛАСИЕ С ДОКУМЕНТАМИ -->
                 <label class="consent-check" id="reg-consent-label">
-                    <input type="checkbox" id="regConsent">
+                    <input type="checkbox" id="regConsent" onchange="onRegConsentChange(this.checked)">
                     <span class="consent-box"></span>
-                    <span class="consent-text" id="reg-consent-text">
-                        Я согласен с <a href="EULA_TOS.html" target="_blank">Пользовательским соглашением</a> и <a href="PRIVACY_POLICY.html" target="_blank">Политикой конфиденциальности</a>
-                    </span>
+                    <span class="consent-text" id="reg-consent-text"></span>
                 </label>
-                <button class="button" style="width:100%" onclick="register()">Создать аккаунт</button>
+                <button class="button" id="reg-submit-btn" style="width:100%" onclick="register()" disabled>Создать аккаунт</button>
                 <button id="have-account-btn" class="auth-link" onclick="showForm('login-form')">← Уже есть аккаунт</button>
             </div>
             <div id="reset-form" style="display:none;">
@@ -1278,6 +1298,10 @@ async function register(){
         return;
     }
 
+    if (!document.getElementById('regConsent').checked) {
+        return showErr('reg-err', t('err_consent_required'));
+    }
+
     const nick=document.getElementById('regNick').value.trim();
     const email=document.getElementById('regEmail').value.trim();
     const pass=document.getElementById('regPass').value;
@@ -1346,6 +1370,9 @@ async function login(){
     }
 }
 function loginGoogle(){
+    if (!document.getElementById('googleConsent')?.checked) {
+        return showErr('login-err', t('err_consent_required'));
+    }
     const p=new firebase.auth.GoogleAuthProvider();
     p.setCustomParameters({prompt:'select_account'});
     auth.signInWithPopup(p).catch(e=>{
@@ -1353,6 +1380,16 @@ function loginGoogle(){
         const msg=msgs[e.code];if(msg!=='')showErr('login-err',msg||e.message);
     });
 }
+
+function onGoogleConsentChange(checked){
+    const btn = document.getElementById('google-login-btn');
+    if (btn) btn.disabled = !checked;
+}
+function onRegConsentChange(checked){
+    const btn = document.getElementById('reg-submit-btn');
+    if (btn) btn.disabled = !checked;
+}
+
 async function finishGoogleReg(){
     const user=auth.currentUser;
     const nick=document.getElementById('gNick').value.trim();
@@ -2731,6 +2768,12 @@ ru: {
 
     profile_reset_pass: '🔑 Сбросить пароль',
     profile_reset_sent: '✅ Письмо отправлено на твой email!',
+
+    err_reg_closed:'Регистрация временно закрыта администратором.',
+    err_consent_required:'Подтверди согласие с соглашением и политикой.',
+    consent_text:'Я согласен с {eula} и {privacy}',
+    consent_eula:'Пользовательским соглашением',
+    consent_privacy:'Политикой конфиденциальности',
     // ЦВЕТ НИКА
     nickcolor_title:'🎨 Цвет ника',
     nickcolor_desc:'Доступно саппортерам CubiX',
@@ -2875,6 +2918,11 @@ en: {
     stat_winrate: 'Win rate',
     profile_reset_pass: '🔑 Reset password',
     profile_reset_sent: '✅ Reset link sent to your email!',
+    err_reg_closed:'Registration is temporarily closed by administrator.',
+    err_consent_required:'Please accept the Terms and Privacy Policy.',
+    consent_text:'I agree to the {eula} and {privacy}',
+    consent_eula:'Terms of Service',
+    consent_privacy:'Privacy Policy',
     nickcolor_title:'🎨 Nickname color',
     nickcolor_desc:'Available to CubiX supporters',
     nickcolor_reset:'Reset (white)',
@@ -2931,6 +2979,15 @@ async function confirmLangChange() {
     _lang = lang;
     applyLang();
     updateLangButtons();
+}
+
+function applyConsentText(elId){
+    const el = document.getElementById(elId);
+    if (!el) return;
+    const html = t('consent_text')
+        .replace('{eula}', `<a href="EULA_TOS.html" target="_blank">${t('consent_eula')}</a>`)
+        .replace('{privacy}', `<a href="PRIVACY_POLICY.html" target="_blank">${t('consent_privacy')}</a>`);
+    el.innerHTML = html;
 }
 
 function updateLangButtons() {
@@ -3116,6 +3173,8 @@ function applyLang() {
     if (forgotBtn) forgotBtn.innerText = t('forgot_pass');
     const noAccBtn = document.getElementById('no-account-btn');
     if (noAccBtn) noAccBtn.innerText = t('no_account');
+    applyConsentText('reg-consent-text');
+    applyConsentText('google-consent-text');
     const resetHintP = document.getElementById('reset-hint-p');
     if (resetHintP) resetHintP.innerText = t('reset_hint');
     const backLoginBtn = document.getElementById('back-login-btn');
