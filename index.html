@@ -771,6 +771,14 @@
                 <input type="email" id="regEmail" placeholder="Email">
                 <input type="password" id="regPass" placeholder="Пароль (мин. 6 символов)">
                 <div class="cf-turnstile" id="turnstile-reg" data-sitekey="0x4AAAAAADjhI9HYLYIg690z" data-theme="dark"></div>
+                <!-- СОГЛАСИЕ С ДОКУМЕНТАМИ -->
+                <label class="consent-check" id="reg-consent-label">
+                    <input type="checkbox" id="regConsent">
+                    <span class="consent-box"></span>
+                    <span class="consent-text" id="reg-consent-text">
+                        Я согласен с <a href="EULA_TOS.html" target="_blank">Пользовательским соглашением</a> и <a href="PRIVACY_POLICY.html" target="_blank">Политикой конфиденциальности</a>
+                    </span>
+                </label>
                 <button class="button" style="width:100%" onclick="register()">Создать аккаунт</button>
                 <button id="have-account-btn" class="auth-link" onclick="showForm('login-form')">← Уже есть аккаунт</button>
             </div>
