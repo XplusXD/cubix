@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Политика конфиденциальности — CubiX</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --panel: #171a21;
+    --text: #e6e8eb;
+    --muted: #9aa0aa;
+    --accent: #7c9cff;
+    --border: #262a33;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    line-height: 1.65;
+  }
+  .wrap {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 48px 24px 96px;
+    position: relative;
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 40px clamp(20px, 5vw, 56px);
+  }
+  .top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  a.back {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+  }
+  a.back:hover { color: var(--accent); }
+  .lang-switch {
+    display: inline-flex;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .lang-switch button {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .lang-switch button.active {
+    background: var(--accent);
+    color: #0f1115;
+  }
+  .lang-switch button:not(.active):hover {
+    color: var(--text);
+  }
+  h1 {
+    font-size: 28px;
+    margin: 0 0 4px;
+  }
+  .updated {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 32px;
+  }
+  h2 {
+    font-size: 19px;
+    margin-top: 36px;
+    margin-bottom: 12px;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+  }
+  p, li { color: #cdd1d8; font-size: 15.5px; }
+  ul { padding-left: 22px; }
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0 20px;
+  }
+  em { color: var(--muted); font-size: 14px; }
+  strong { color: var(--text); }
+  code {
+    background: #1f232c;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+  [data-lang="en"] { display: none; }
+  body.lang-en [data-lang="ru"] { display: none; }
+  body.lang-en [data-lang="en"] { display: block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top-row">
+    <a class="back" href="index.html">← На главную / Back</a>
+    <div class="lang-switch">
+      <button id="btn-ru" class="active" onclick="setLang('ru')">RU</button>
+      <button id="btn-en" onclick="setLang('en')">ENG</button>
+    </div>
+  </div>
+  <div class="panel">
+    <div data-lang="ru">
+      <h1>Политика конфиденциальности</h1>
+<p><em>Дата последнего обновления: 15 августа 2026</em></p>
+<p>Эта политика объясняет, какие данные собирает игра <strong>CubiX</strong> ("Игра"), для чего они используются и как ими управлять. Разработчик — <strong>Xplus (Xplus Company)</strong> ("Автор", "мы").</p>
+<h2>1. Какие данные мы собираем</h2>
+<p>При входе через ваш аккаунт Google (OAuth) мы получаем и сохраняем:
+- адрес электронной почты, связанный с вашим Google-аккаунтом;
+- никнейм, который вы используете в Игре;
+- игровой прогресс и статистику (достижения, счётчики использований способностей и т.п.);
+- статус "Сапортер" (если вы поддержали проект и Автор вручную включил вам эту функцию).</p>
+<p><strong>Мы не получаем и не храним ваш пароль</strong> — вход полностью обрабатывается Google, у нас нет к нему доступа.</p>
+<p>Мы не собираем данные о платежах напрямую — покупки/донаты происходят на отдельном сайте, вне Игры, и обрабатываются платёжной платформой этого сайта, а не Автором.</p>
+<h2>2. Для чего используются данные</h2>
+<ul>
+<li>для идентификации вашей учётной записи между сессиями и устройствами;</li>
+<li>для сохранения игрового прогресса, достижений и настроек;</li>
+<li>для отображения никнеймов в игровых списках (например, "доска почёта");</li>
+<li>для включения функции "Сапортер", если вы поддержали проект;</li>
+<li>для модерации — бана аккаунта при читерстве или нарушении правил поведения.</li>
+</ul>
+<h2>3. Где и как хранятся данные</h2>
+<p>Данные хранятся в базе данных Firebase (Google). Часть данных (счётчики достижений и т.п.) также может временно храниться локально на вашем устройстве через PlayerPrefs и синхронизироваться с сервером.</p>
+<h2>4. Передача данных третьим лицам</h2>
+<p>Мы не продаём и не передаём ваши данные третьим лицам в рекламных целях. Данные обрабатываются через инфраструктуру Google (Firebase, Google OAuth) в соответствии с их собственными политиками конфиденциальности.</p>
+<h2>5. Хранение и удаление данных</h2>
+<p>Данные хранятся, пока у вас есть аккаунт в Игре, либо до вашего запроса на удаление. Вы можете запросить удаление своих данных (email, ник, прогресс), написав Автору: <strong>[твой контакт]</strong>. Обратите внимание: при бане за читерство прогресс и связанные данные могут быть удалены/заблокированы без возможности восстановления (см. Пользовательское соглашение).</p>
+<h2>6. Возраст пользователей</h2>
+<p>Игра не предназначена для детей младше [13/16 — укажи возраст согласно нужному региону]. Если вам меньше этого возраста, пожалуйста, не используйте функции входа через аккаунт.</p>
+<h2>7. Ваши права</h2>
+<p>В зависимости от вашего региона (например, если вы находитесь в ЕС) вы можете иметь право на доступ к своим данным, их исправление или удаление. Чтобы воспользоваться этим правом, напишите: <strong>[твой контакт]</strong>.</p>
+<h2>8. Изменения политики</h2>
+<p>Мы можем обновлять эту политику. Актуальная версия всегда доступна по ссылке: <strong>[ссылка на страницу с документом]</strong>.</p>
+<h2>9. Контакты</h2>
+<p>По всем вопросам о данных: <strong>[твой контакт — email/discord/и т.д.]</strong></p>
+<hr />
+<p><em>Это шаблон для ознакомления, а не документ, подготовленный юристом. Если игроки из ЕС (GDPR) или Калифорнии (CCPA) — стоит показать этот текст юристу перед публикацией, особенно разделы 5 и 7 про права пользователей на удаление/доступ к данным.</em></p>
+    </div>
+    <div data-lang="en">
+      <h1>Privacy Policy</h1>
+<p><em>Last updated: August 15, 2026</em></p>
+<p>This policy explains what data the game <strong>CubiX</strong> ("Game") collects, how it is used, and how you can manage it. The developer is <strong>Xplus (Xplus Company)</strong> ("Author", "we").</p>
+<h2>1. What Data We Collect</h2>
+<p>When you log in via your Google account (OAuth), we receive and store:
+- the email address associated with your Google account;
+- the nickname you use in the Game;
+- your game progress and statistics (achievements, ability-usage counters, etc.);
+- your "Supporter" status (if you supported the project and the Author manually enabled this feature for you).</p>
+<p><strong>We do not receive or store your password</strong> — login is handled entirely by Google; we have no access to it.</p>
+<p>We do not collect payment data directly — purchases/donations take place on a separate website, outside the Game, and are processed by that website's payment platform, not by the Author.</p>
+<h2>2. How the Data Is Used</h2>
+<ul>
+<li>to identify your account across sessions and devices;</li>
+<li>to save your game progress, achievements, and settings;</li>
+<li>to display nicknames in in-game lists (e.g., "Hall of Fame");</li>
+<li>to enable the "Supporter" feature, if you supported the project;</li>
+<li>for moderation — banning an account for cheating or rule violations.</li>
+</ul>
+<h2>3. Where and How Data Is Stored</h2>
+<p>Data is stored in a Firebase (Google) database. Some data (e.g., achievement counters) may also be temporarily stored locally on your device via PlayerPrefs and synced with the server.</p>
+<h2>4. Sharing Data with Third Parties</h2>
+<p>We do not sell or share your data with third parties for advertising purposes. Data is processed through Google's infrastructure (Firebase, Google OAuth) in accordance with their own privacy policies.</p>
+<h2>5. Data Retention and Deletion</h2>
+<p>Data is retained as long as you have an account in the Game, or until you request deletion. You can request deletion of your data (email, nickname, progress) by contacting the Author: <strong>[your contact]</strong>. Note: if banned for cheating, progress and related data may be deleted/blocked without the possibility of recovery (see the End User License Agreement).</p>
+<h2>6. Age of Users</h2>
+<p>The Game is not intended for children under [13/16 — specify the age appropriate for your target region]. If you are under this age, please do not use the account login features.</p>
+<h2>7. Your Rights</h2>
+<p>Depending on your region (e.g., if you are in the EU), you may have the right to access, correct, or delete your data. To exercise this right, contact: <strong>[your contact]</strong>.</p>
+<h2>8. Changes to This Policy</h2>
+<p>We may update this policy. The current version is always available at: <strong>[link to the document page]</strong>.</p>
+<h2>9. Contact</h2>
+<p>For any questions about your data: <strong>[your contact — email/Discord/etc.]</strong></p>
+<hr />
+<p><em>This is a draft template for informational purposes, not a document prepared by a lawyer. If players from the EU (GDPR) or California (CCPA) are involved, it is recommended to have this text reviewed by a lawyer before publishing, especially Sections 5 and 7 regarding users' rights to deletion/data access.</em></p>
+    </div>
+  </div>
+</div>
+<script>
+function setLang(lang) {
+  document.body.classList.toggle('lang-en', lang === 'en');
+  document.getElementById('btn-ru').classList.toggle('active', lang === 'ru');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  localStorage.setItem('cubix-legal-lang', lang);
+}
+(function() {
+  var saved = localStorage.getItem('cubix-legal-lang');
+  if (saved === 'en') setLang('en');
+})();
+</script>
+</body>
+</html>
