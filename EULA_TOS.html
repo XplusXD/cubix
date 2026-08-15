@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Пользовательское соглашение — CubiX</title>
+<title>User License Agreement CubiX</title>
 <style>
   :root {
     --bg: #0f1115;
@@ -207,11 +207,18 @@ function setLang(lang) {
   document.body.classList.toggle('lang-en', lang === 'en');
   document.getElementById('btn-ru').classList.toggle('active', lang === 'ru');
   document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  document.title = lang === 'en' ? 'End User License Agreement CubiX' : 'Пользовательское соглашение CubiX';
   localStorage.setItem('cubix-legal-lang', lang);
 }
 (function() {
-  var saved = localStorage.getItem('cubix-legal-lang');
-  if (saved === 'en') setLang('en');
+  const saved = localStorage.getItem('cubix-legal-lang');
+  if (saved) {
+    if (saved === 'en') setLang('en');
+  } else {
+    const detected = navigator.language.startsWith('ru') ? 'ru' : 'en';
+    localStorage.setItem('cubix-legal-lang', detected);
+    if (detected === 'en') setLang('en');
+  }
 })();
 </script>
 </body>
