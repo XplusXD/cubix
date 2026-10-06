@@ -425,15 +425,29 @@
             border-radius:0!important;
             object-fit:fill!important;
         }
-        #music-btn { box-shadow:0 0 10px rgba(29,185,84,0.5); border:2px solid #1DB954; background:#111;
-            display:flex; align-items:center; justify-content:center; font-size:18px; }
+        #music-wrap { position:relative; width:34px; height:34px; }
+        #music-btn {
+            width:34px; height:34px; display:flex; align-items:center; justify-content:center;
+            font-size:18px; background:#111; border:2px solid #1DB954;
+            box-shadow:0 0 10px rgba(29,185,84,0.5);
+        }
         #music-btn:hover { box-shadow:0 0 18px rgba(29,185,84,0.8); }
-        #music-menu { display:none; position:fixed; bottom:128px; right:70px; z-index:901;
+
+        #music-menu {
+            position:absolute; right:calc(100% + 12px); top:50%; transform:translateY(-50%);
+            min-width:180px; padding:8px;
             background:rgba(15,15,15,0.95); border:1px solid #1DB954; border-radius:14px;
-            padding:8px; min-width:170px; }
-        #music-menu.show { display:block; }
-        #music-menu a { display:flex; align-items:center; gap:10px; padding:9px 12px; color:#ddd;
-            text-decoration:none; border-radius:8px; font-size:14px; }
+            opacity:0; visibility:hidden; transition:opacity 0.2s, visibility 0.2s;
+        }
+        /* невидимый мостик, чтобы меню не закрывалось, пока мышь идёт от кнопки к меню */
+        #music-menu::before { content:''; position:absolute; top:0; right:-14px; width:14px; height:100%; }
+        #music-wrap:hover #music-menu { opacity:1; visibility:visible; }
+
+        #music-menu a {
+            display:flex; align-items:center; gap:10px; padding:9px 12px;
+            color:#ddd; text-decoration:none; border-radius:8px; font-size:14px; transition:0.2s;
+        }
+        #music-menu a:hover { background:rgba(29,185,84,0.2); color:white; }
         #music-menu a img { width:24px; height:24px; border-radius:6px; object-fit:contain; flex-shrink:0; }
     </style>
 </head>
@@ -3566,16 +3580,19 @@ function openFull(u){document.getElementById('viewer').style.display='flex';docu
         <div class="social-btn" id="music-btn" onclick="toggleMusicMenu(event)" title="Music">🎵</div>
     </div>
 
-    <div id="music-menu">
-        <a href="ССЫЛКА_SPOTIFY" target="_blank">
-            <img src="https://xplusxd.github.io/cubix/spotify.png"> Spotify
-        </a>
-        <a href="ССЫЛКА_YOUTUBE_MUSIC" target="_blank">
-            <img src="https://xplusxd.github.io/cubix/youtubemusic.png"> YouTube Music
-        </a>
-        <a href="ССЫЛКА_APPLE_MUSIC" target="_blank">
-            <img src="https://xplusxd.github.io/cubix/applemusic.png"> Apple Music
-        </a>
+    <div id="music-wrap">
+        <div class="social-btn" id="music-btn">🎵</div>
+        <div id="music-menu">
+            <a href="https://open.spotify.com/album/0hWNeUeT0PhY4sKLdIXBdL?si=rmiPCfhhQRWPEcTyovYazg" target="_blank">
+                <img src="https://xplusxd.github.io/cubix/spotify.png"> Spotify
+            </a>
+            <a href="https://music.youtube.com/playlist?list=OLAK5uy_nq2UG-njDzAfFBc4gj3oYm9XJRdVGMhzk&si=Txd4MVtW0xNNL-hw" target="_blank">
+                <img src="https://xplusxd.github.io/cubix/youtubemusic.png"> YouTube Music
+            </a>
+            <a href="https://music.apple.com/us/album/cubix-ep/6818198209" target="_blank">
+                <img src="https://xplusxd.github.io/cubix/applemusic.png"> Apple Music
+            </a>
+        </div>
     </div>
                 
     <!-- ДИСКОРД -->
