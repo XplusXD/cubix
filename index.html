@@ -425,6 +425,7 @@
             border-radius:0!important;
             object-fit:fill!important;
         }
+        
         #music-wrap { position:relative; width:34px; height:34px; }
         #music-btn {
             width:34px; height:34px; display:flex; align-items:center; justify-content:center;
@@ -439,9 +440,12 @@
             background:rgba(15,15,15,0.95); border:1px solid #1DB954; border-radius:14px;
             opacity:0; visibility:hidden; transition:opacity 0.2s, visibility 0.2s;
         }
-        /* невидимый мостик, чтобы меню не закрывалось, пока мышь идёт от кнопки к меню */
         #music-menu::before { content:''; position:absolute; top:0; right:-14px; width:14px; height:100%; }
-        #music-wrap:hover #music-menu { opacity:1; visibility:visible; }
+
+        #music-wrap.open #music-menu { opacity:1; visibility:visible; }
+        @media (hover:hover) {
+            #music-wrap:hover #music-menu { opacity:1; visibility:visible; }
+        }
 
         #music-menu a {
             display:flex; align-items:center; gap:10px; padding:9px 12px;
@@ -3556,6 +3560,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
     
 function openFull(u){document.getElementById('viewer').style.display='flex';document.getElementById('viewImg').src=u;}
+
+    document.addEventListener('DOMContentLoaded', () => {
+    const wrap = document.getElementById('music-wrap');
+    const btn  = document.getElementById('music-btn');
+    if (!wrap || !btn) return;
+    btn.addEventListener('click', e => { e.stopPropagation(); wrap.classList.toggle('open'); });
+    document.addEventListener('click', e => { if (!wrap.contains(e.target)) wrap.classList.remove('open'); });
+});
+    
 </script>
     
     <!-- СОЦСЕТИ -->
