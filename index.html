@@ -432,9 +432,9 @@
             background:rgba(15,15,15,0.95); border:1px solid #1DB954; border-radius:14px;
             padding:8px; min-width:170px; }
         #music-menu.show { display:block; }
-        #music-menu a { display:block; padding:9px 12px; color:#ddd; text-decoration:none;
-            border-radius:8px; font-size:14px; }
-        #music-menu a:hover { background:rgba(29,185,84,0.15); color:white; }
+        #music-menu a { display:flex; align-items:center; gap:10px; padding:9px 12px; color:#ddd;
+            text-decoration:none; border-radius:8px; font-size:14px; }
+        #music-menu a img { width:24px; height:24px; border-radius:6px; object-fit:contain; flex-shrink:0; }
     </style>
 </head>
 <body>
@@ -3567,9 +3567,15 @@ function openFull(u){document.getElementById('viewer').style.display='flex';docu
     </div>
 
     <div id="music-menu">
-        <a href="https://open.spotify.com/album/0hWNeUeT0PhY4sKLdIXBdL?si=rmiPCfhhQRWPEcTyovYazg" target="_blank">🟢 Spotify</a>
-        <a href="https://music.youtube.com/playlist?list=OLAK5uy_nq2UG-njDzAfFBc4gj3oYm9XJRdVGMhzk&si=HtlSXndUnamcnhqR" target="_blank">🔴 YouTube Music</a>
-        <a href="https://music.apple.com/us/album/cubix-ep/6818198209" target="_blank">⚪ Apple Music</a>
+        <a href="ССЫЛКА_SPOTIFY" target="_blank">
+            <img src="https://xplusxd.github.io/cubix/spotify.png"> Spotify
+        </a>
+        <a href="ССЫЛКА_YOUTUBE_MUSIC" target="_blank">
+            <img src="https://xplusxd.github.io/cubix/youtubemusic.png"> YouTube Music
+        </a>
+        <a href="ССЫЛКА_APPLE_MUSIC" target="_blank">
+            <img src="https://xplusxd.github.io/cubix/applemusic.png"> Apple Music
+        </a>
     </div>
                 
     <!-- ДИСКОРД -->
