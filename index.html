@@ -514,6 +514,10 @@
 </div>
 
 <!-- ВЫБОР АВАТАРА -->
+<div class="modal-overlay" id="gi-modal" onclick="if(event.target===this)giCloseModal()">
+    <div class="modal-box" id="gi-modal-box"></div>
+</div>
+
 <div class="modal-overlay" id="avatar-modal">
     <div class="modal-box">
         <button class="modal-close-btn" onclick="closeAvatarPicker()">✕</button>
@@ -548,6 +552,7 @@
         <div class="nav-btn" style="color:#B65DFF;" onclick="showPage('donate-page','background-red.png',this)" data-lang-key="nav_donate">💜 Поддержать (Сервера)</div>
         <div class="nav-btn" style="color:#FF4D4D;" onclick="window.open('https://cubixx.fandom.com/ru/wiki/Cubix','_blank')" data-lang-key="nav_fandom">Fandom❤️‍🔥</div>
         <div class="nav-btn" id="admin-nav-btn" style="display:none;color:#f1c40f;" onclick="showPage('admin-page','background-red.png',this)" data-lang-key="nav_admin">🛠 Админ<span class="mod-badge" id="mod-count" style="display:none;">0</span></div>
+        <div class="nav-btn" id="images-nav-btn" style="display:none;color:#ff9ff3;" onclick="showPage('images-page','background-red.png',this)">🖼 Картинки</div>
     </div>
 
     <div id="home" class="page active">
@@ -613,7 +618,81 @@
             height='712' title='cubixd'></iframe>
     </div>
 
-   <div id="admin-page" class="page">
+      <!-- ═══ СТРАНИЦА: КАРТИНКИ В ИГРЕ (только админ) ═══ -->
+   <div id="images-page" class="page">
+    <style>
+        .gi-card { background:rgba(20,20,20,0.9); border:1px solid #333; border-radius:15px; padding:16px; margin-bottom:16px; text-align:left; }
+        .gi-card h3 { color:#f1c40f; margin:0 0 8px; font-size:20px; }
+        .gi-hint { color:#888; font-size:13px; line-height:1.5; margin:0 0 12px; }
+        .gi-hint b { color:#ccc; }
+        .gi-drop { border:2px dashed #444; border-radius:14px; padding:22px 12px; text-align:center; transition:0.2s; }
+        .gi-drop.over { border-color:#f1c40f; background:rgba(241,196,15,0.06); }
+        .gi-btn { display:block; width:100%; min-height:48px; padding:12px 16px; border-radius:12px; border:none; cursor:pointer; font-size:16px; font-family:Door,Arial,sans-serif; background:#333; color:#eee; transition:0.2s; margin-top:8px; }
+        .gi-btn:hover { filter:brightness(1.2); }
+        .gi-btn.gold { background:#f39c12; color:#000; font-weight:bold; }
+        .gi-btn.red { background:#c0392b; color:#fff; }
+        .gi-btn.blue { background:#2980b9; color:#fff; }
+        .gi-btn.on { background:#8e44ad; color:#fff; }
+        .gi-btn.inline { display:inline-block; width:auto; margin-top:0; }
+        .gi-opt { display:flex; gap:10px; align-items:center; color:#bbb; font-size:14px; margin-top:10px; cursor:pointer; min-height:32px; }
+        .gi-opt input { width:20px; height:20px; margin:0; max-width:none; flex-shrink:0; }
+        .gi-bar-wrap { height:8px; background:#222; border-radius:99px; overflow:hidden; margin-top:12px; display:none; }
+        .gi-bar { height:100%; width:0; background:linear-gradient(90deg,#27ae60,#2ecc71); transition:width 0.2s; }
+        .gi-chips { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+        .gi-chip { padding:10px 16px; border-radius:99px; border:1px solid #444; background:transparent; color:#aaa; cursor:pointer; font-size:14px; font-family:Door,Arial,sans-serif; min-height:42px; }
+        .gi-chip.active { background:#f1c40f; border-color:#f1c40f; color:#000; font-weight:bold; }
+        .gi-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; }
+        .gi-tile { background:rgba(255,255,255,0.03); border:1px solid #2a2a2a; border-radius:12px; padding:8px; }
+        .gi-tile.incomplete { border-color:#7a5a12; }
+        .gi-num { text-align:center; color:#f1c40f; font-size:15px; margin-bottom:6px; }
+        .gi-pair { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+        .gi-half { position:relative; aspect-ratio:1/1; border-radius:8px; overflow:hidden; background:#111; border:2px solid #333; cursor:pointer; display:flex; align-items:center; justify-content:center; -webkit-tap-highlight-color:transparent; }
+        .gi-half.ru { border-color:#8e2b22; } .gi-half.en { border-color:#1f5f8b; }
+        .gi-half.empty { border-style:dashed; border-color:#333; color:#555; font-size:26px; }
+        .gi-half img { width:100%; height:100%; object-fit:cover; display:block; }
+        .gi-flag { position:absolute; left:3px; bottom:3px; background:rgba(0,0,0,0.7); color:#fff; font-size:10px; padding:1px 5px; border-radius:5px; }
+        .gi-blurmark { position:absolute; right:3px; top:3px; background:rgba(142,68,173,0.9); font-size:12px; padding:0 4px; border-radius:5px; }
+        #gi-modal .modal-box { max-width:480px; }
+        #gi-modal .gi-prev { width:100%; max-height:46vh; object-fit:contain; background:#000; border-radius:12px; margin:8px 0 6px; }
+        #gi-modal .gi-row { display:flex; gap:8px; margin-top:8px; }
+        #gi-modal .gi-row input { flex:1; margin:0; max-width:none; min-height:48px; font-size:16px; }
+        #gi-modal .gi-row .gi-btn { width:auto; margin-top:0; flex-shrink:0; }
+        @media (max-width:480px) { .gi-grid { grid-template-columns:repeat(auto-fill,minmax(135px,1fr)); } }
+    </style>
+
+    <h2 style="color:#f1c40f;">🖼 Картинки в игре</h2>
+
+    <div class="gi-card">
+        <h3>⬆ Загрузка</h3>
+        <p class="gi-hint">
+            Имя файла задаёт позицию и язык: <b>1-rus.png</b>, <b>12-eng.jpg</b> (rus/ru и eng/en). Картинка на занятой позиции заменится. Только PNG/JPG. Нет картинки на позиции — объект в игре не появится.
+        </p>
+        <div class="gi-drop" id="gi-dropzone">
+            <input type="file" id="gi-upload-input" accept="image/png,image/jpeg" multiple style="display:none" onchange="giHandleFiles(this.files); this.value='';">
+            <button class="gi-btn gold" style="margin-top:0;" onclick="document.getElementById('gi-upload-input').click()">+ Выбрать файлы (можно все сразу)</button>
+            <div style="color:#666;font-size:12px;margin-top:10px;">…или перетащи файлы сюда</div>
+        </div>
+        <label class="gi-opt"><input type="checkbox" id="gi-compress" checked> Уменьшать большие картинки до 2048 px</label>
+        <label class="gi-opt"><input type="checkbox" id="gi-move-both" checked> При смене позиции двигать RU и EN вместе</label>
+        <div class="gi-bar-wrap" id="gi-bar-wrap"><div class="gi-bar" id="gi-bar"></div></div>
+        <div id="gi-status" style="color:#2ecc71;font-size:14px;margin-top:10px;min-height:18px;"></div>
+        <div id="gi-log" style="color:#e67e22;font-size:12px;margin-top:6px;white-space:pre-wrap;"></div>
+    </div>
+
+    <div class="gi-card">
+        <h3>Позиции</h3>
+        <div id="gi-counts" style="color:#888;font-size:13px;margin-bottom:12px;"></div>
+        <div class="gi-chips">
+            <button class="gi-chip active" id="gi-chip-all" onclick="giSetFilter('all')">Все</button>
+            <button class="gi-chip" id="gi-chip-incomplete" onclick="giSetFilter('incomplete')">⚠ Нет RU или EN</button>
+            <button class="gi-chip" id="gi-chip-blur" onclick="giSetFilter('blur')">🌫 С блюром</button>
+        </div>
+        <p class="gi-hint" style="margin-bottom:10px;">Нажми на картинку — откроется меню (заменить, блюр, позиция, удалить). Нажми на пустую клетку «+» — загрузишь картинку именно сюда.</p>
+        <div id="gi-grid" class="gi-grid"></div>
+    </div>
+   </div>
+
+<div id="admin-page" class="page">
     <h2 style="color:#f1c40f;">🛠 Панель администратора</h2>
 
     <!-- СИСТЕМНЫЕ НАСТРОЙКИ -->
@@ -1576,6 +1655,7 @@ async function resetPasswordFromProfile() {
 async function authStateHandler(user){
     const af=document.getElementById('auth-forms'),pd=document.getElementById('profile-data'),vs=document.getElementById('verify-screen');
     const ab=document.getElementById('admin-nav-btn'),fb=document.getElementById('friends-nav-btn');
+    const ib=document.getElementById('images-nav-btn'); if(ib) ib.style.display='none';
     ab.style.display='none';fb.style.display='none';_isAdmin=false;_myUid=null;
     document.getElementById('upload-box').style.display='none';
 
@@ -1646,7 +1726,7 @@ async function authStateHandler(user){
     fb.style.display='inline-block';
     listenFriends();listenIncoming();listenOutgoing();
 
-    if(d.isAdmin===true){_isAdmin=true;ab.style.display='inline-block';document.getElementById('upload-box').style.display='block';loadModeration();loadAdminGallery();listenReports();loadSensitiveAvatarGrid();renderAvatarsAdminList();}
+    if(d.isAdmin===true){_isAdmin=true;ab.style.display='inline-block';document.getElementById('upload-box').style.display='block';loadModeration();loadAdminGallery();listenReports();loadSensitiveAvatarGrid();renderAvatarsAdminList();document.getElementById('images-nav-btn').style.display='inline-block';initGameImagesAdmin();}
     loadMyGallery(user.uid);
 }
 auth.onAuthStateChanged(authStateHandler);
@@ -3551,6 +3631,342 @@ async function reorderAvatars() {
         updates[`avatarsList/${item.id}/order`] = i;
     });
     await db.ref().update(updates);
+}
+
+// ══ КАРТИНКИ В ИГРЕ (АДМИН): gameImages/{ru|en}/pNNN = {pos,url,path,blur}; превью: gameImagesThumbs/{ru|en}/pNNN = dataURL ══
+const GI_LANGS = ['ru','en'];
+let _giData = { ru:{}, en:{} };    // lang -> { позиция: {url,path,blur} }
+let _giThumbs = { ru:{}, en:{} };  // lang -> { позиция: dataURL }
+let _giInit = false, _giBusy = false, _giFilter = 'all', _giSel = null;
+
+function giKey(pos) { return 'p' + String(pos).padStart(3, '0'); }
+
+function initGameImagesAdmin() {
+    if (_giInit) return;
+    _giInit = true;
+
+    db.ref('gameImages').on('value', snap => {
+        const v = snap.val() || {};
+        _giData = { ru:{}, en:{} };
+        GI_LANGS.forEach(l => {
+            const node = v[l] || {};
+            Object.keys(node).forEach(k => {
+                const it = node[k];
+                if (!it || !it.url) return;
+                const pos = Number(it.pos !== undefined ? it.pos : k.slice(1));
+                if (!pos) return;
+                _giData[l][pos] = { url: it.url, path: it.path || '', blur: it.blur === true };
+            });
+        });
+        renderGameImagesAdmin();
+        giRenderModal();
+    });
+
+    db.ref('gameImagesThumbs').on('value', snap => {
+        const v = snap.val() || {};
+        _giThumbs = { ru:{}, en:{} };
+        GI_LANGS.forEach(l => {
+            const node = v[l] || {};
+            Object.keys(node).forEach(k => {
+                if (typeof node[k] === 'string') _giThumbs[l][Number(k.slice(1))] = node[k];
+            });
+        });
+        renderGameImagesAdmin();
+    });
+
+    const dz = document.getElementById('gi-dropzone');
+    if (dz) {
+        dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
+        dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+        dz.addEventListener('drop', e => {
+            e.preventDefault();
+            dz.classList.remove('over');
+            if (e.dataTransfer.files && e.dataTransfer.files.length) giHandleFiles(e.dataTransfer.files);
+        });
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') giCloseModal(); });
+}
+
+// "1-rus.png" -> {pos:1, lang:'ru'}
+function giParseName(name) {
+    const m = name.toLowerCase().match(/^\s*0*(\d+)\s*[-_ ]\s*(rus|ru|eng|en)(?![a-z])/);
+    if (!m) return null;
+    const pos = parseInt(m[1], 10);
+    if (!pos || pos < 1) return null;
+    return { pos, lang: (m[2] === 'rus' || m[2] === 'ru') ? 'ru' : 'en' };
+}
+
+// Основная картинка: до 2048 px (PNG остаётся PNG, остальное -> JPEG). Маленькая — без изменений.
+async function giPrepare(file, compress) {
+    const isPng = file.type === 'image/png';
+    const ext = isPng ? 'png' : 'jpg';
+    if (!compress) return { blob: file, ext, type: file.type };
+    try {
+        const bmp = await createImageBitmap(file);
+        const scale = Math.min(1, 2048 / Math.max(bmp.width, bmp.height));
+        if (scale === 1) { bmp.close && bmp.close(); return { blob: file, ext, type: file.type }; }
+        const c = document.createElement('canvas');
+        c.width = Math.round(bmp.width * scale);
+        c.height = Math.round(bmp.height * scale);
+        c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+        bmp.close && bmp.close();
+        const type = isPng ? 'image/png' : 'image/jpeg';
+        const blob = await new Promise(res => c.toBlob(res, type, 0.9));
+        if (!blob) throw new Error('toBlob failed');
+        return { blob, ext, type };
+    } catch (e) {
+        console.warn('Сжатие не удалось, грузим оригинал', e);
+        return { blob: file, ext, type: file.type };
+    }
+}
+
+// Маленькое превью (~160 px) для админки, чтобы не качать полные картинки
+async function giMakeThumb(file) {
+    try {
+        const bmp = await createImageBitmap(file);
+        const s = 160 / Math.max(bmp.width, bmp.height);
+        const c = document.createElement('canvas');
+        c.width = Math.max(1, Math.round(bmp.width * Math.min(1, s)));
+        c.height = Math.max(1, Math.round(bmp.height * Math.min(1, s)));
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#111';
+        ctx.fillRect(0, 0, c.width, c.height);
+        ctx.drawImage(bmp, 0, 0, c.width, c.height);
+        bmp.close && bmp.close();
+        return c.toDataURL('image/jpeg', 0.7);
+    } catch (e) { return ''; }
+}
+
+async function giUploadOne(pos, lang, file) {
+    const compress = document.getElementById('gi-compress').checked;
+    const prep = await giPrepare(file, compress);
+    const thumb = await giMakeThumb(file);
+    const path = `gameImages/${lang}/${giKey(pos)}-${Date.now()}.${prep.ext}`;
+    const ref = storage.ref(path);
+    await ref.put(prep.blob, { contentType: prep.type });
+    const url = await ref.getDownloadURL();
+    const old = _giData[lang][pos];
+    const blur = old ? old.blur === true : false;
+    const updates = {};
+    updates[`gameImages/${lang}/${giKey(pos)}`] = { pos, url, path, blur };
+    updates[`gameImagesThumbs/${lang}/${giKey(pos)}`] = thumb || null;
+    await db.ref().update(updates);
+    _giData[lang][pos] = { url, path, blur };
+    if (old && old.path) storage.ref(old.path).delete().catch(() => {});
+}
+
+function giSetProgress(done, total) {
+    const w = document.getElementById('gi-bar-wrap'), b = document.getElementById('gi-bar');
+    if (!w || !b) return;
+    w.style.display = total ? 'block' : 'none';
+    b.style.width = total ? Math.round(done / total * 100) + '%' : '0';
+}
+
+async function giHandleFiles(fileList) {
+    if (_giBusy) { alert('Загрузка уже идёт, подожди.'); return; }
+    const files = Array.from(fileList);
+    if (!files.length) return;
+
+    const status = document.getElementById('gi-status');
+    const log = document.getElementById('gi-log');
+    log.innerText = '';
+
+    const skipped = [], seen = new Set(), jobs = [];
+    files.forEach(f => {
+        const p = giParseName(f.name);
+        const okType = f.type === 'image/png' || f.type === 'image/jpeg';
+        if (!p) { skipped.push(`${f.name} — не понял имя (нужно вида 1-rus.png)`); return; }
+        if (!okType) { skipped.push(`${f.name} — только PNG/JPG`); return; }
+        const k = p.lang + ':' + p.pos;
+        if (seen.has(k)) { skipped.push(`${f.name} — дубль позиции ${p.pos} (${p.lang.toUpperCase()}) в этой пачке`); return; }
+        seen.add(k);
+        jobs.push({ ...p, file: f });
+    });
+    jobs.sort((a, b) => a.pos - b.pos || a.lang.localeCompare(b.lang));
+
+    _giBusy = true;
+    let done = 0, errors = 0;
+    const errList = [];
+    giSetProgress(0, jobs.length);
+    for (const j of jobs) {
+        status.innerText = `⏳ ${done + errors + 1} из ${jobs.length}: ${j.file.name}`;
+        try { await giUploadOne(j.pos, j.lang, j.file); done++; }
+        catch (e) { errors++; errList.push(`${j.file.name} — ошибка загрузки`); console.error('Ошибка загрузки', j.file.name, e); }
+        giSetProgress(done + errors, jobs.length);
+    }
+    _giBusy = false;
+    setTimeout(() => giSetProgress(0, 0), 1500);
+
+    status.innerText = `✅ Загружено: ${done}` + (errors ? `, ❌ ошибок: ${errors}` : '') + (skipped.length ? `, пропущено: ${skipped.length}` : '');
+    const lines = [...skipped, ...errList];
+    if (lines.length) log.innerText = lines.join('\n');
+}
+
+// Выбор одного файла для конкретной позиции/языка (замена или загрузка в пустую клетку)
+function giPickFile(lang, pos) {
+    const inp = document.createElement('input');
+    inp.type = 'file';
+    inp.accept = 'image/png,image/jpeg';
+    inp.onchange = async () => {
+        const f = inp.files[0];
+        if (!f) return;
+        if (_giBusy) { alert('Загрузка уже идёт, подожди.'); return; }
+        _giBusy = true;
+        const status = document.getElementById('gi-status');
+        status.innerText = `⏳ Загрузка: позиция ${pos} (${lang.toUpperCase()})...`;
+        try { await giUploadOne(pos, lang, f); status.innerText = `✅ Позиция ${pos} (${lang.toUpperCase()}) загружена`; }
+        catch (e) { console.error(e); status.innerText = '❌ Ошибка загрузки'; }
+        _giBusy = false;
+    };
+    inp.click();
+}
+
+// Куда уедет каждая позиция при переносе A -> B. Если B занята — остальные сдвигаются (вставка), без обмена.
+function giComputeMove(map, A, B) {
+    const busy = !!map[B];
+    const res = {};
+    Object.keys(map).forEach(k => {
+        const p = Number(k);
+        let n = p;
+        if (p === A) n = B;
+        else if (busy && A < B && p > A && p <= B) n = p - 1;
+        else if (busy && A > B && p >= B && p < A) n = p + 1;
+        res[p] = n;
+    });
+    return res;
+}
+
+async function giMove(lang, from, rawTo) {
+    const to = parseInt(rawTo, 10);
+    if (!to || to < 1 || to > 999) { alert('Введи позицию — число от 1 до 999'); return; }
+    if (to === from) return;
+    const both = document.getElementById('gi-move-both').checked;
+    const langs = both ? GI_LANGS.filter(l => _giData[l][from]) : [lang];
+
+    const updates = {};
+    langs.forEach(l => {
+        const mapping = giComputeMove(_giData[l], from, to);
+        const node = {}, tn = {};
+        Object.keys(_giData[l]).forEach(p => {
+            const np = mapping[p], it = _giData[l][p];
+            node[giKey(np)] = { pos: np, url: it.url, path: it.path || '', blur: it.blur === true };
+            const th = _giThumbs[l][p];
+            if (th) tn[giKey(np)] = th;
+        });
+        updates[`gameImages/${l}`] = Object.keys(node).length ? node : null;
+        updates[`gameImagesThumbs/${l}`] = Object.keys(tn).length ? tn : null;
+    });
+    try { await db.ref().update(updates); giCloseModal(); }
+    catch (e) { console.error(e); alert('Не удалось переставить'); }
+}
+
+async function giToggleBlur(lang, pos) {
+    const it = _giData[lang][pos];
+    if (!it) return;
+    try { await db.ref(`gameImages/${lang}/${giKey(pos)}/blur`).set(!it.blur); }
+    catch (e) { console.error(e); alert('Не удалось сохранить блюр'); }
+}
+
+async function giDelete(lang, pos) {
+    const it = _giData[lang][pos];
+    if (!it) return;
+    if (!confirm(`Удалить картинку ${pos} (${lang.toUpperCase()}) навсегда?`)) return;
+    const updates = {};
+    updates[`gameImages/${lang}/${giKey(pos)}`] = null;
+    updates[`gameImagesThumbs/${lang}/${giKey(pos)}`] = null;
+    try {
+        await db.ref().update(updates);
+        if (it.path) storage.ref(it.path).delete().catch(() => {});
+        giCloseModal();
+    } catch (e) { console.error(e); alert('Не удалось удалить'); }
+}
+
+// ── Окно действий ──
+function giOpen(lang, pos) {
+    if (!_giData[lang][pos]) { giPickFile(lang, pos); return; }
+    _giSel = { lang, pos };
+    giRenderModal();
+    document.getElementById('gi-modal').classList.add('show');
+}
+function giCloseModal() {
+    _giSel = null;
+    const m = document.getElementById('gi-modal');
+    if (m) m.classList.remove('show');
+}
+function giRenderModal() {
+    const box = document.getElementById('gi-modal-box');
+    if (!box || !_giSel) return;
+    const { lang, pos } = _giSel;
+    const it = _giData[lang][pos];
+    if (!it) { giCloseModal(); return; }
+    box.innerHTML = `
+        <button class="modal-close-btn" onclick="giCloseModal()">✕</button>
+        <h2 style="font-size:22px;margin:0;">Позиция ${pos} · ${lang === 'ru' ? '🇷🇺 RU' : '🇬🇧 EN'}</h2>
+        <img class="gi-prev" src="${esc(it.url)}" alt="">
+        <button class="gi-btn ${it.blur ? 'on' : ''}" onclick="giToggleBlur('${lang}',${pos})">🌫 Блюр: ${it.blur ? 'ВКЛ (нажми, чтобы выключить)' : 'выкл (нажми, чтобы включить)'}</button>
+        <button class="gi-btn blue" onclick="giPickFile('${lang}',${pos})">🔄 Заменить файл</button>
+        <div class="gi-row">
+            <input type="number" min="1" max="999" inputmode="numeric" placeholder="Новая позиция" id="gi-move-input"
+                onkeydown="if(event.key==='Enter')giMove('${lang}',${pos},this.value)">
+            <button class="gi-btn gold" onclick="giMove('${lang}',${pos},document.getElementById('gi-move-input').value)">Переставить</button>
+        </div>
+        <a href="${esc(it.url)}" target="_blank" rel="noopener" class="gi-btn" style="text-decoration:none;text-align:center;">🔗 Открыть оригинал</a>
+        <button class="gi-btn red" onclick="giDelete('${lang}',${pos})">🗑 Удалить</button>
+    `;
+}
+
+function giSetFilter(f) {
+    _giFilter = f;
+    ['all', 'incomplete', 'blur'].forEach(n => {
+        const c = document.getElementById('gi-chip-' + n);
+        if (c) c.classList.toggle('active', n === f);
+    });
+    renderGameImagesAdmin();
+}
+
+function renderGameImagesAdmin() {
+    const grid = document.getElementById('gi-grid');
+    if (!grid) return;
+    const maxPos = Math.max(0, ...GI_LANGS.flatMap(l => Object.keys(_giData[l]).map(Number)));
+
+    const cnt = document.getElementById('gi-counts');
+    if (cnt) cnt.innerText = `🇷🇺 RU: ${Object.keys(_giData.ru).length} · 🇬🇧 EN: ${Object.keys(_giData.en).length} · последняя позиция: ${maxPos}`;
+
+    if (maxPos === 0) {
+        grid.style.display = 'block';
+        grid.innerHTML = '<p style="color:#555;text-align:center;">Пока ничего не загружено.</p>';
+        return;
+    }
+    grid.style.display = '';
+
+    const half = (lang, pos) => {
+        const it = _giData[lang][pos];
+        const flag = lang.toUpperCase();
+        if (!it) return `<div class="gi-half ${lang} empty" onclick="giOpen('${lang}',${pos})" title="Загрузить ${flag}">+<span class="gi-flag">${flag}</span></div>`;
+        const src = _giThumbs[lang][pos] || it.url;
+        return `<div class="gi-half ${lang}" onclick="giOpen('${lang}',${pos})">
+            <img src="${esc(src)}" loading="lazy" alt="">
+            <span class="gi-flag">${flag}</span>${it.blur ? '<span class="gi-blurmark">🌫</span>' : ''}
+        </div>`;
+    };
+
+    let html = '', shown = 0;
+    for (let pos = 1; pos <= maxPos; pos++) {
+        const r = _giData.ru[pos], e = _giData.en[pos];
+        const incomplete = !r || !e;
+        if (_giFilter === 'incomplete' && !incomplete) continue;
+        if (_giFilter === 'blur' && !((r && r.blur) || (e && e.blur))) continue;
+        shown++;
+        html += `<div class="gi-tile ${incomplete ? 'incomplete' : ''}">
+            <div class="gi-num">${pos}</div>
+            <div class="gi-pair">${half('ru', pos)}${half('en', pos)}</div>
+        </div>`;
+    }
+    if (!shown) {
+        grid.style.display = 'block';
+        html = '<p style="color:#555;text-align:center;">Ничего не найдено по этому фильтру 👌</p>';
+    }
+    grid.innerHTML = html;
 }
 
 // Инициализируем кнопки языка при загрузке
