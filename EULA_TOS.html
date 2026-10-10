@@ -3,111 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>User License Agreement CubiX</title>
+<title>End User License Agreement CubiX</title>
 <style>
-  :root {
-    --bg: #0f1115;
-    --panel: #171a21;
-    --text: #e6e8eb;
-    --muted: #9aa0aa;
-    --accent: #7c9cff;
-    --border: #262a33;
-  }
+  :root { --bg:#0f1115; --panel:#171a21; --text:#e6e8eb; --muted:#9aa0aa; --accent:#7c9cff; --border:#262a33; }
   * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-    line-height: 1.65;
-  }
-  .wrap {
-    max-width: 780px;
-    margin: 0 auto;
-    padding: 48px 24px 96px;
-    position: relative;
-  }
-  .panel {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 40px clamp(20px, 5vw, 56px);
-  }
-  .top-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  a.back {
-    color: var(--muted);
-    text-decoration: none;
-    font-size: 14px;
-  }
-  a.back:hover { color: var(--accent); }
-  .lang-switch {
-    display: inline-flex;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 3px;
-    gap: 2px;
-  }
-  .lang-switch button {
-    border: none;
-    background: transparent;
-    color: var(--muted);
-    font-size: 13px;
-    font-weight: 600;
-    padding: 6px 14px;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-  }
-  .lang-switch button.active {
-    background: var(--accent);
-    color: #0f1115;
-  }
-  .lang-switch button:not(.active):hover {
-    color: var(--text);
-  }
-  h1 {
-    font-size: 28px;
-    margin: 0 0 4px;
-  }
-  .updated {
-    color: var(--muted);
-    font-size: 14px;
-    margin-bottom: 32px;
-  }
-  h2 {
-    font-size: 19px;
-    margin-top: 36px;
-    margin-bottom: 12px;
-    color: var(--accent);
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 8px;
-  }
-  p, li { color: #cdd1d8; font-size: 15.5px; }
-  ul { padding-left: 22px; }
-  hr {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 40px 0 20px;
-  }
-  em { color: var(--muted); font-size: 14px; }
-  strong { color: var(--text); }
-  code {
-    background: #1f232c;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 13px;
-  }
-  [data-lang="en"] { display: none; }
-  body.lang-en [data-lang="ru"] { display: none; }
-  body.lang-en [data-lang="en"] { display: block; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif; line-height:1.65; }
+  .wrap { max-width:780px; margin:0 auto; padding:48px 24px 96px; position:relative; }
+  .panel { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:40px clamp(20px,5vw,56px); }
+  .top-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; gap:12px; flex-wrap:wrap; }
+  a.back { color:var(--muted); text-decoration:none; font-size:14px; }
+  a.back:hover { color:var(--accent); }
+  .lang-switch { display:inline-flex; background:var(--panel); border:1px solid var(--border); border-radius:999px; padding:3px; gap:2px; }
+  .lang-switch button { border:none; background:transparent; color:var(--muted); font-size:13px; font-weight:600; padding:6px 14px; border-radius:999px; cursor:pointer; transition:background .15s,color .15s; }
+  .lang-switch button.active { background:var(--accent); color:#0f1115; }
+  .lang-switch button:not(.active):hover { color:var(--text); }
+  h1 { font-size:28px; margin:0 0 4px; }
+  h2 { font-size:19px; margin-top:36px; margin-bottom:12px; color:var(--accent); border-bottom:1px solid var(--border); padding-bottom:8px; }
+  p, li { color:#cdd1d8; font-size:15.5px; }
+  ul { padding-left:22px; }
+  li { margin-bottom:6px; }
+  hr { border:none; border-top:1px solid var(--border); margin:40px 0 20px; }
+  em { color:var(--muted); font-size:14px; }
+  strong { color:var(--text); }
+  a { color:var(--accent); }
+  .todo { background:#5a4a00; color:#ffe27a; padding:1px 6px; border-radius:4px; }
+  [data-lang] { display:none; }
+  [data-lang].show { display:block; }
 </style>
 </head>
 <body>
@@ -115,110 +36,141 @@
   <div class="top-row">
     <a class="back" href="index.html">← На главную / Back</a>
     <div class="lang-switch">
-      <button id="btn-ru" class="active" onclick="setLang('ru')">RU</button>
+      <button id="btn-ru" onclick="setLang('ru')">RU</button>
       <button id="btn-en" onclick="setLang('en')">ENG</button>
     </div>
   </div>
   <div class="panel">
     <div data-lang="ru">
-      <h1>Пользовательское соглашение (EULA / Условия использования)</h1>
-<p><em>Дата последнего обновления: 15 августа 2026</em></p>
-<p>Это соглашение регулирует использование игры <strong>CubiX</strong> ("Игра"), разработанной <strong>Xplus (Xplus Company)</strong> ("Автор", "мы"). Устанавливая и запуская Игру, вы ("Игрок", "вы") соглашаетесь с условиями ниже.</p>
-<p>Игра распространяется бесплатно для ПК. Если вы не согласны с условиями — не устанавливайте и не используйте Игру.</p>
+<h1>Пользовательское соглашение (EULA / Условия использования)</h1>
+<p><em>Дата последнего обновления: 9 октября 2026</em></p>
+<p>Это соглашение регулирует использование игры <strong>CubiX</strong> («Игра») и её сайта («Сайт»), разработанных <strong>Xplus</strong>, частным разработчиком («Автор», «мы»). Устанавливая и запуская Игру или создавая аккаунт, вы («Игрок», «вы») соглашаетесь с условиями ниже. Сведения об Авторе — в <a href="IMPRESSUM.html">Impressum</a>.</p>
+<p>Игра распространяется бесплатно для ПК. Если вы не согласны с условиями — не устанавливайте и не используйте Игру и Сайт. Игра и Сайт не предназначены для детей младше 16 лет.</p>
+
 <h2>1. Лицензия</h2>
 <p>Автор предоставляет вам ограниченное, отзываемое, непередаваемое право установить и использовать Игру в личных некоммерческих целях. Игра не продаётся вам — вы получаете право на использование, а не право собственности на копию ПО или его код.</p>
-<p>Запрещается:
-- распространять, продавать или сдавать в аренду копии Игры;
-- изменять, декомпилировать или пытаться извлечь исходный код Игры, за исключением случаев, прямо разрешённых применимым законом;
-- использовать Игру для создания производных продуктов без письменного разрешения Автора;
-- выдавать себя за Автора или иным образом злоупотреблять именем/брендом Игры.</p>
+<p>Запрещается:</p>
+<ul>
+<li>распространять, продавать или сдавать в аренду копии Игры;</li>
+<li>изменять, декомпилировать или пытаться извлечь исходный код Игры, за исключением случаев, прямо разрешённых применимым законом;</li>
+<li>использовать Игру для создания производных продуктов без письменного разрешения Автора;</li>
+<li>выдавать себя за Автора или иным образом злоупотреблять именем/брендом Игры.</li>
+</ul>
+
 <h2>2. Учётная запись</h2>
-<p>Вход в Игру осуществляется через ваш аккаунт Google (OAuth). Автор <strong>не хранит и не имеет доступа к вашему паролю</strong> — аутентификацию полностью выполняет Google.</p>
-<p>При входе Автор получает и сохраняет ограниченный набор данных, связанных с вашим аккаунтом (см. Политику конфиденциальности) — в частности, адрес электронной почты и никнейм — для работы игровых функций (прогресс, достижения, доска почёта, статус "сапортера" и т.д.).</p>
-<p>Вы несёте ответственность за сохранность доступа к своему Google-аккаунту и за все действия, совершённые под вашей учётной записью в Игре.</p>
+<p>Войти можно через аккаунт Google (OAuth) или зарегистрироваться по e-mail и паролю. Автор <strong>не видит ваш пароль</strong>: при входе через Google он обрабатывается Google, а при регистрации по e-mail — сервисом Firebase Authentication в защищённом виде.</p>
+<p>При входе Автор получает и сохраняет ограниченный набор данных (см. <a href="PRIVACY_POLICY.html">Политику конфиденциальности</a>) — в частности, адрес электронной почты и никнейм — для работы функций (прогресс, достижения, друзья, галерея, доска почёта, статус «Сапортер» и т.д.).</p>
+<p>Вы несёте ответственность за сохранность доступа к своей учётной записи и за все действия, совершённые под ней.</p>
+
 <h2>3. Правила поведения и античит</h2>
-<p>Играя, вы соглашаетесь:
-- не использовать читы, эксплойты, сторонний софт для получения нечестного преимущества;
-- не злоупотреблять багами игры намеренно во вред другим игрокам;
-- не оскорблять и не преследовать других игроков.</p>
-<p><strong>Нарушение этих правил может повлечь бан и полную потерю аккаунта в Игре</strong> (включая накопленный прогресс, достижения и купленные/подключённые статусы, например "сапортер") — на усмотрение Автора, без предварительного уведомления и без компенсации.</p>
-<p>Решения о банах принимаются Автором единолично; Автор не обязан предоставлять апелляцию, но может рассмотреть обращение на своё усмотрение.</p>
-<h2>4. Поддержка игры ("Сапортер") и покупки</h2>
-<p>Прямые покупки внутри Игры отсутствуют. Поддержать разработку можно только через внешний сайт: <strong>https://ko-fi.com/cubixd</strong>.</p>
-<p>Статус "Сапортер" и связанные с ним косметические возможности (например, [бандана и т.п.]) включаются Автором <strong>вручную</strong> после получения доната — это не автоматизированный процесс, возможны задержки.</p>
-<p>Поскольку оплата и её обработка происходят вне Игры, вопросы возвратов и обработки платежей регулируются условиями платёжной платформы, через которую был сделан донат, а не настоящим документом. Статус "Сапортер" — это признание поддержки, а не покупка виртуального товара с гарантированной ценностью; Автор оставляет за собой право отозвать статус при нарушении правил (см. п.3).</p>
-<h2>5. Контент, юмор и предупреждение</h2>
+<p>Играя и пользуясь Сайтом, вы соглашаетесь:</p>
+<ul>
+<li>не использовать читы, эксплойты, сторонний софт для получения нечестного преимущества;</li>
+<li>не злоупотреблять багами намеренно во вред другим игрокам;</li>
+<li>не оскорблять и не преследовать других игроков;</li>
+<li>не выбирать никнеймы и аватары, нарушающие права других или закон.</li>
+</ul>
+<p><strong>Нарушение этих правил может повлечь бан и потерю аккаунта</strong> (включая прогресс, достижения и подключённые статусы, например «Сапортер») — по решению Автора. При лёгких нарушениях мы по возможности предупреждаем заранее; при серьёзных нарушениях (читы, преследование, незаконный контент) блокировка возможна без предупреждения и без компенсации.</p>
+<p>Решение о бане принимает Автор. Вы можете написать нам по контактам из п. 9 — мы добросовестно рассмотрим обращение, но не обязаны менять решение.</p>
+
+<h2>4. Загружаемый контент (галерея, аватары)</h2>
+<p>Вы можете загружать изображения и описания в галерею. Загружая, вы подтверждаете, что имеете право на этот контент, и даёте Автору неисключительное безвозмездное право показывать его на Сайте (в том числе другим пользователям) на время, пока он размещён. Авторские права остаются у вас.</p>
+<p>Запрещён незаконный контент, контент, нарушающий чужие права, порнография, насилие против реальных людей, ненависть и травля, а также материалы, раскрывающие чужие личные данные. Автор может проверять, скрывать, отклонять и удалять любой контент и ограничивать доступ к галерее. Сообщить о нарушении можно по контактам из п. 9.</p>
+
+<h2>5. Поддержка игры («Сапортер») и покупки</h2>
+<p>Прямых покупок внутри Игры нет. Поддержать разработку можно только через внешний сайт: <strong>https://ko-fi.com/cubixd</strong>.</p>
+<p>Статус «Сапортер» и связанные с ним косметические возможности (например, бандана) включаются Автором <strong>вручную</strong> после получения доната — это не автоматизированный процесс, возможны задержки.</p>
+<p>Поскольку оплата происходит вне Игры, вопросы возвратов и обработки платежей регулируются условиями платёжной платформы, через которую сделан донат. Статус «Сапортер» — признание поддержки, а не покупка виртуального товара с гарантированной ценностью; Автор вправе отозвать статус при нарушении правил (см. п. 3). Ваши обязательные права потребителя от этого не затрагиваются.</p>
+
+<h2>6. Контент, юмор и предупреждение</h2>
 <p>Игра содержит чёрный юмор, сатиру и шутки, которые могут восприниматься неоднозначно. Автор не преследует цели оскорбить кого-либо — весь подобный контент несёт исключительно развлекательный характер.</p>
-<p>Часть визуального контента по умолчанию скрыта (заблюрена). Вы можете отключить блюр в настройках Игры <strong>на свой выбор и под свою ответственность</strong> — это действие означает, что вы сознательно соглашаетесь увидеть немаскированный контент.</p>
-<h2>6. Отказ от ответственности</h2>
-<p>Игра предоставляется "как есть", без каких-либо гарантий, явных или подразумеваемых. Автор не гарантирует бесперебойную работу, отсутствие ошибок или сохранность прогресса при сбоях серверов/базы данных.</p>
-<p>Автор не несёт ответственности за любой ущерб, возникший в результате использования Игры, в пределах, разрешённых применимым законодательством.</p>
-<h2>7. Изменения условий</h2>
-<p>Автор может изменять данное соглашение. Актуальная версия всегда доступна по ссылке: <strong>https://xplus228.github.io/cubix/EULA_TOS.html</strong>. Продолжение использования Игры после изменений означает согласие с новой версией.</p>
-<h2>8. Контакты</h2>
-<p>По вопросам, связанным с Игрой, аккаунтом или данными, обращайтесь: <strong>Gmail: xplus.official10@gmail.com
-Discord: _xplus</strong></p>
+<p>Часть визуального контента по умолчанию скрыта (заблюрена). Вы можете отключить блюр в настройках <strong>на свой выбор и под свою ответственность</strong> — это означает, что вы сознательно соглашаетесь увидеть немаскированный контент.</p>
+
+<h2>7. Отказ от ответственности</h2>
+<p>Игра предоставляется «как есть». Автор не гарантирует бесперебойную работу, отсутствие ошибок или сохранность прогресса при сбоях серверов/базы данных.</p>
+<p>Автор отвечает без ограничений за умысел, грубую неосторожность, вред жизни, здоровью и телу, а также в случаях, где ответственность не может быть исключена законом. В остальных случаях ответственность Автора ограничена в пределах, разрешённых применимым законодательством.</p>
+
+<h2>8. Изменения условий и применимое право</h2>
+<p>Автор может изменять соглашение. О существенных изменениях мы сообщим на Сайте или в Игре. Актуальная версия: <strong>https://xplusxd.github.io/cubix/EULA_TOS.html</strong>. Если вы не согласны с изменениями, вы можете прекратить использование и удалить аккаунт; продолжение использования после уведомления означает согласие с новой версией.</p>
+<p>Применяется право Германии, при этом обязательные нормы защиты потребителей страны вашего проживания остаются в силе.</p>
+
+<h2>9. Контакты</h2>
+<p>По вопросам об Игре, аккаунте, данных или нарушениях: <strong>Email: xplus.official10@gmail.com<br>Discord: _xplus</strong></p>
 <hr />
     </div>
     <div data-lang="en">
-      <h1>End User License Agreement (EULA / Terms of Use)</h1>
-<p><em>Last updated: August 15, 2026</em></p>
-<p>This agreement governs the use of the game <strong>CubiX</strong> ("Game"), developed by <strong>Xplus (Xplus Company)</strong> ("Author", "we"). By installing and running the Game, you ("Player", "you") agree to the terms below.</p>
-<p>The Game is distributed free of charge for PC. If you do not agree with these terms, please do not install or use the Game.</p>
+<h1>End User License Agreement (EULA / Terms of Use)</h1>
+<p><em>Last updated: October 9, 2026</em></p>
+<p>This agreement governs the use of the game <strong>CubiX</strong> ("Game") and its website ("Website"), developed by <strong>Xplus</strong>, an individual developer ("Author", "we"). By installing and running the Game or creating an account, you ("Player", "you") agree to the terms below. Information about the Author is in the <a href="IMPRESSUM.html">Impressum</a>.</p>
+<p>The Game is distributed free of charge for PC. If you do not agree with these terms, please do not install or use the Game and Website. The Game and Website are not intended for children under 16.</p>
+
 <h2>1. License</h2>
 <p>The Author grants you a limited, revocable, non-transferable right to install and use the Game for personal, non-commercial purposes. The Game is not sold to you — you receive a right to use it, not ownership of the software copy or its code.</p>
-<p>You may not:
-- distribute, sell, or rent copies of the Game;
-- modify, decompile, or attempt to extract the Game's source code, except where expressly permitted by applicable law;
-- use the Game to create derivative products without the Author's written permission;
-- impersonate the Author or otherwise misuse the Game's name/brand.</p>
+<p>You may not:</p>
+<ul>
+<li>distribute, sell, or rent copies of the Game;</li>
+<li>modify, decompile, or attempt to extract the Game's source code, except where expressly permitted by applicable law;</li>
+<li>use the Game to create derivative products without the Author's written permission;</li>
+<li>impersonate the Author or otherwise misuse the Game's name/brand.</li>
+</ul>
+
 <h2>2. Account</h2>
-<p>You log into the Game using your Google account (OAuth). The Author <strong>does not store and has no access to your password</strong> — authentication is handled entirely by Google.</p>
-<p>Upon login, the Author receives and stores a limited set of data linked to your account (see the Privacy Policy) — in particular, your email address and nickname — to enable in-game features (progress, achievements, hall of fame, "Supporter" status, etc.).</p>
-<p>You are responsible for keeping access to your Google account secure and for all actions performed under your account in the Game.</p>
+<p>You can sign in with your Google account (OAuth) or register with an email address and password. The Author <strong>cannot see your password</strong>: with Google sign-in it is handled by Google, and with email registration by Firebase Authentication in protected form.</p>
+<p>Upon sign-in the Author receives and stores a limited set of data (see the <a href="PRIVACY_POLICY.html">Privacy Policy</a>) — in particular your email address and nickname — to enable features (progress, achievements, friends, gallery, hall of fame, "Supporter" status, etc.).</p>
+<p>You are responsible for keeping access to your account secure and for all actions performed under it.</p>
+
 <h2>3. Rules of Conduct and Anti-Cheat</h2>
-<p>By playing, you agree to:
-- not use cheats, exploits, or third-party software to gain an unfair advantage;
-- not deliberately abuse game bugs to harm other players;
-- not harass or insult other players.</p>
-<p><strong>Violating these rules may result in a ban and complete loss of your Game account</strong> (including accumulated progress, achievements, and purchased/linked statuses, e.g. "Supporter") — at the Author's discretion, without prior notice and without compensation.</p>
-<p>Ban decisions are made solely by the Author; the Author is not obligated to provide an appeal process but may review requests at their discretion.</p>
-<h2>4. Supporting the Game ("Supporter") and Purchases</h2>
+<p>By playing and using the Website, you agree to:</p>
+<ul>
+<li>not use cheats, exploits, or third-party software to gain an unfair advantage;</li>
+<li>not deliberately abuse bugs to harm other players;</li>
+<li>not harass or insult other players;</li>
+<li>not choose nicknames or avatars that infringe others' rights or the law.</li>
+</ul>
+<p><strong>Violating these rules may result in a ban and loss of your account</strong> (including progress, achievements and linked statuses, e.g. "Supporter") — at the Author's decision. For minor violations we try to warn you first; for serious violations (cheating, harassment, illegal content) a ban may be imposed without prior notice and without compensation.</p>
+<p>Ban decisions are made by the Author. You may contact us using the details in Section 9 — we will review your request in good faith but are not obliged to change the decision.</p>
+
+<h2>4. Uploaded Content (Gallery, Avatars)</h2>
+<p>You may upload images and descriptions to the gallery. By uploading, you confirm that you have the right to this content and grant the Author a non-exclusive, royalty-free right to display it on the Website (including to other users) for as long as it is posted. You keep your copyright.</p>
+<p>Illegal content, content infringing others' rights, pornography, violence against real people, hate and harassment, and material revealing others' personal data are prohibited. The Author may review, hide, reject and remove any content and restrict gallery access. You can report violations using the contact details in Section 9.</p>
+
+<h2>5. Supporting the Game ("Supporter") and Purchases</h2>
 <p>There are no direct in-game purchases. You can support development only through an external website: <strong>https://ko-fi.com/cubixd</strong>.</p>
-<p>"Supporter" status and related cosmetic features (e.g. [the bandana, etc.]) are enabled by the Author <strong>manually</strong> after a donation is received — this is not an automated process, and delays may occur.</p>
-<p>Since payment and its processing occur outside the Game, refund and payment-processing questions are governed by the terms of the payment platform through which the donation was made, not by this document. "Supporter" status is a recognition of support, not a purchase of a virtual item with guaranteed value; the Author reserves the right to revoke the status in case of rule violations (see Section 3).</p>
-<h2>5. Content, Humor, and Warning</h2>
+<p>"Supporter" status and related cosmetic features (e.g. the bandana) are enabled by the Author <strong>manually</strong> after a donation is received — this is not an automated process, and delays may occur.</p>
+<p>Since payment occurs outside the Game, refund and payment-processing questions are governed by the terms of the payment platform used for the donation. "Supporter" status is a recognition of support, not a purchase of a virtual item with guaranteed value; the Author may revoke the status in case of rule violations (see Section 3). Your mandatory consumer rights remain unaffected.</p>
+
+<h2>6. Content, Humor, and Warning</h2>
 <p>The Game contains dark humor, satire, and jokes that may be perceived ambiguously. The Author does not intend to offend anyone — all such content is purely for entertainment purposes.</p>
-<p>Some visual content is hidden (blurred) by default. You may disable the blur in the Game's settings <strong>by your own choice and at your own responsibility</strong> — doing so means you knowingly consent to view the unmasked content.</p>
-<h2>6. Disclaimer</h2>
-<p>The Game is provided "as is," without any warranties, express or implied. The Author does not guarantee uninterrupted operation, absence of errors, or preservation of progress in the event of server/database failures.</p>
-<p>The Author shall not be liable for any damages arising from the use of the Game, to the extent permitted by applicable law.</p>
-<h2>7. Changes to Terms</h2>
-<p>The Author may amend this agreement. The current version is always available at: <strong>https://xplus228.github.io/cubix/EULA_TOS.html</strong>. Continued use of the Game after changes constitutes acceptance of the new version.</p>
-<h2>8. Contact</h2>
-<p>For questions related to the Game, your account, or your data, contact: <strong>Gmail: xplus.official10@gmail.com
-Discord: _xplus</strong></p>
+<p>Some visual content is hidden (blurred) by default. You may disable the blur in the settings <strong>by your own choice and at your own responsibility</strong> — doing so means you knowingly consent to view the unmasked content.</p>
+
+<h2>7. Disclaimer</h2>
+<p>The Game is provided "as is". The Author does not guarantee uninterrupted operation, absence of errors, or preservation of progress in the event of server/database failures.</p>
+<p>The Author is liable without limitation for intent, gross negligence, injury to life, body or health, and wherever liability cannot be excluded by law. In other cases the Author's liability is limited to the extent permitted by applicable law.</p>
+
+<h2>8. Changes to Terms and Governing Law</h2>
+<p>The Author may amend this agreement. We will announce material changes on the Website or in the Game. The current version is at: <strong>https://xplusxd.github.io/cubix/EULA_TOS.html</strong>. If you disagree with changes, you can stop using the Game and delete your account; continued use after notice constitutes acceptance of the new version.</p>
+<p>German law applies, without affecting mandatory consumer protection provisions of your country of residence.</p>
+
+<h2>9. Contact</h2>
+<p>For questions about the Game, your account, your data, or to report violations: <strong>Email: xplus.official10@gmail.com<br>Discord: _xplus</strong></p>
 <hr />
     </div>
   </div>
 </div>
 <script>
+var TITLES = {ru:'Пользовательское соглашение CubiX', en:'End User License Agreement CubiX'};
 function setLang(lang) {
-  document.body.classList.toggle('lang-en', lang === 'en');
+  document.querySelectorAll('[data-lang]').forEach(function(el) { el.classList.toggle('show', el.getAttribute('data-lang') === lang); });
   document.getElementById('btn-ru').classList.toggle('active', lang === 'ru');
   document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-  document.title = lang === 'en' ? 'End User License Agreement CubiX' : 'Пользовательское соглашение CubiX';
-  localStorage.setItem('cubix-legal-lang', lang);
+  document.title = TITLES[lang];
+  try { localStorage.setItem('cubix-legal-lang', lang); } catch (e) {}
 }
 (function() {
-  const saved = localStorage.getItem('cubix-legal-lang');
-  if (saved) {
-    if (saved === 'en') setLang('en');
-  } else {
-    const detected = navigator.language.startsWith('ru') ? 'ru' : 'en';
-    localStorage.setItem('cubix-legal-lang', detected);
-    if (detected === 'en') setLang('en');
-  }
+  var saved = null;
+  try { saved = localStorage.getItem('cubix-legal-lang'); } catch (e) {}
+  var lang = saved || ((navigator.language || '').toLowerCase().indexOf('ru') === 0 ? 'ru' : 'en');
+  setLang(lang === 'ru' ? 'ru' : 'en');
 })();
 </script>
 </body>
