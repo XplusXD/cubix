@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -9,7 +9,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-    <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <style>
         @font-face { font-family: Door; src: url('door.otf'); }
@@ -613,9 +612,7 @@
     <div id="donate-page" class="page">
         <h2 style="margin-bottom:10px;">💜 Пожертвовать серверам</h2>
         <p style="color:#888;font-size:18px;max-width:500px;margin:0 auto 30px;">Серверы CubiX работают за счёт донатов. Если хочешь помочь, любая сумма важна!</p>
-        <iframe id='kofiframe' src='https://ko-fi.com/cubixd/?hidefeed=false&widget=true&embed=true&preview=true'
-            style='border:none;width:100%;max-width:650px;padding:4px;background:#0f0f0f;border-radius:16px;'
-            height='712' title='cubixd'></iframe>
+        <div id="kofi-holder"></div>
     </div>
 
       <!-- ═══ СТРАНИЦА: КАРТИНКИ В ИГРЕ (только админ) ═══ -->
@@ -1907,7 +1904,7 @@ function makeCard(d) {
     }
 
     // ↓ Создаем HTML для иконки саппорта, если у автора есть этот статус в базе (authorIsSupporter)
-    const supportBadge = d.authorIsSupporter ? `<span class="support-icon" data-i18n-tip="${esc(supporterTooltip())}" style="margin-left:5px; vertical-align:middle; display:inline-block; width:20px; height:20px;"><img src="https://img.icons8.com/emoji/48/green-heart.png" style="width:100%; height:100%;"></span>` : '';
+    const supportBadge = d.authorIsSupporter ? `<span class="support-icon" data-i18n-tip="${esc(supporterTooltip())}" style="margin-left:5px; vertical-align:middle; display:inline-block; width:20px; height:20px;"><span style="display:block;width:100%;height:100%;text-align:center;font-size:15px;line-height:20px;">💚</span></span>` : '';
 
     // Здесь мы вставили ${supportBadge} сразу после ${idBadge}
     card.innerHTML = `${isSens ? '<span class="sensitive-badge">sensitive</span>' : ''}<div class="card-info"><div class="card-author" style="${d.authorNickColor ? `color:${d.authorNickColor}` : ''}">${esc(d.author)}${idBadge}${supportBadge}</div><div class="card-desc">${esc(d.desc) || `<em style="color:#555">${_lang === 'en' ? 'no description' : 'нет описания'}</em>`}</div><div class="card-meta"><span>📅 ${esc(fmtTime(d.time))}</span><span>📐 ${meta}</span></div></div>`;
@@ -2429,7 +2426,7 @@ function listenFriends(){
                         badge.className = 'support-icon';
                         badge.setAttribute('data-i18n-tip', supporterTooltip());
                         badge.style.cssText = 'margin-left:6px;vertical-align:middle;display:inline-block;width:20px;height:20px;margin-top:-2px;';
-                        badge.innerHTML = `<img src="https://img.icons8.com/emoji/48/green-heart.png" style="width:100%;height:100%;">`;
+                        badge.innerHTML = `<span style="display:block;width:100%;height:100%;text-align:center;font-size:15px;line-height:20px;">💚</span>`;
                     }
                 }
             });
@@ -2686,13 +2683,75 @@ function listenReports() {
     });
 }
 
-// Ko-fi плавающая кнопка
-kofiWidgetOverlay.draw('cubixd', {
-    'type': 'floating-chat',
-    'floating-chat.donateButton.text': _lang === 'en' ? 'Support' : 'Поддержать',
-    'floating-chat.donateButton.background-color': '#794bc4',
-    'floating-chat.donateButton.text-color': '#fff'
-});
+// ══════════════════════════════════════════════
+// COOKIE / СОГЛАСИЕ (Ko-fi грузится только после согласия)
+// ══════════════════════════════════════════════
+let _kofiLoaded = false;
+function ccGet() { try { return localStorage.getItem('cubix_cc'); } catch (e) { return null; } }
+function ccSet(v) { try { localStorage.setItem('cubix_cc', v); } catch (e) {} }
+
+function drawKofiFloating() {
+    if (!window.kofiWidgetOverlay) return;
+    kofiWidgetOverlay.draw('cubixd', {
+        'type': 'floating-chat',
+        'floating-chat.donateButton.text': _lang === 'en' ? 'Support' : 'Поддержать',
+        'floating-chat.donateButton.background-color': '#794bc4',
+        'floating-chat.donateButton.text-color': '#fff'
+    });
+}
+function loadKofi() {
+    if (_kofiLoaded) return;
+    _kofiLoaded = true;
+    const s = document.createElement('script');
+    s.src = 'https://storage.ko-fi.com/cdn/scripts/overlay-widget.js';
+    s.onload = drawKofiFloating;
+    document.head.appendChild(s);
+}
+function ccChoose(v) {
+    const was = ccGet();
+    ccSet(v);
+    document.getElementById('cc-banner').style.display = 'none';
+    // Если согласие отозвали — перезагружаем, чтобы выгрузить Ko-fi
+    if (v !== 'all' && (was === 'all' || _kofiLoaded)) { location.reload(); return; }
+    if (v === 'all') loadKofi();
+    ccRenderKofiHolder();
+}
+function ccOpen() { document.getElementById('cc-banner').style.display = 'block'; }
+
+function ccRenderKofiHolder() {
+    const h = document.getElementById('kofi-holder');
+    if (!h) return;
+    if (ccGet() === 'all') {
+        h.innerHTML = `<iframe id="kofiframe" src="https://ko-fi.com/cubixd/?hidefeed=false&widget=true&embed=true&preview=true"
+            style="border:none;width:100%;max-width:650px;padding:4px;background:#0f0f0f;border-radius:16px;"
+            height="712" title="cubixd"></iframe>`;
+    } else {
+        h.innerHTML = `<div style="max-width:650px;margin:0 auto;background:rgba(20,20,20,0.9);border:1px solid #333;border-radius:16px;padding:22px;">
+            <p style="color:#aaa;font-size:15px;line-height:1.5;margin:0 0 14px;">${t('kofi_ph')}</p>
+            <button class="button" style="font-size:18px;padding:12px 28px;" onclick="ccChoose('all')">${t('kofi_show')}</button><br>
+            <a href="https://ko-fi.com/cubixd" target="_blank" rel="noopener" style="color:#7c9cff;font-size:14px;">${t('kofi_open')}</a>
+        </div>`;
+    }
+}
+
+let _ccStarted = false;
+function ccTranslate() {
+    const priv = `<a href="PRIVACY_POLICY.html" target="_blank" style="color:#7c9cff;text-decoration:underline;">${t('consent_privacy')}</a>`;
+    document.getElementById('cc-text').innerHTML = t('cc_text').replace('{privacy}', priv);
+    document.getElementById('cc-btn-nec').innerText = t('cc_nec');
+    document.getElementById('cc-btn-all').innerText = t('cc_all');
+    document.getElementById('cc-open').innerText = '🍪 ' + t('cc_settings');
+    document.getElementById('cc-priv').innerText = t('consent_privacy');
+    ccRenderKofiHolder();
+    if (!_ccStarted) {
+        _ccStarted = true;
+        const c = ccGet();
+        if (c === 'all') loadKofi();
+        if (c !== 'all' && c !== 'necessary') ccOpen();
+    }
+}
+window.addEventListener('load', ccTranslate);
+
 
 // ══════════════════════════════════════════════
 // ЛОКАЛИЗАЦИЯ
@@ -2864,6 +2923,10 @@ ru: {
     consent_text:'Я согласен с {eula} и {privacy}',
     consent_eula:'Пользовательским соглашением',
     consent_privacy:'Политикой конфиденциальности',
+    cc_text:'Мы используем только необходимое хранилище браузера (язык, настройки). Виджет Ko-fi — сторонний сервис, он получает твой IP-адрес и может ставить свои cookie — загружается только с твоего согласия. Подробнее: {privacy}.',
+    cc_nec:'Только необходимое', cc_all:'Принять Ko-fi', cc_settings:'Настройки cookie',
+    kofi_ph:'Виджет Ko-fi — сторонний сервис: при загрузке он получает твой IP-адрес и может использовать свои cookie. Поэтому он не загружается, пока ты не разрешишь.',
+    kofi_show:'Показать виджет Ko-fi', kofi_open:'или открыть страницу на ko-fi.com',
     // ЦВЕТ НИКА
     nickcolor_title:'🎨 Цвет ника',
     nickcolor_desc:'Доступно саппортерам CubiX',
@@ -3013,6 +3076,10 @@ en: {
     consent_text:'I agree to the {eula} and {privacy}',
     consent_eula:'Terms of Service',
     consent_privacy:'Privacy Policy',
+    cc_text:'We only use strictly necessary browser storage (language, settings). The Ko-fi widget is a third-party service that receives your IP address and may set its own cookies, so it only loads with your consent. More in the {privacy}.',
+    cc_nec:'Necessary only', cc_all:'Accept Ko-fi', cc_settings:'Cookie settings',
+    kofi_ph:'The Ko-fi widget is a third-party service: when loaded it receives your IP address and may use its own cookies. That is why it stays unloaded until you allow it.',
+    kofi_show:'Show Ko-fi widget', kofi_open:'or open the page on ko-fi.com',
     nickcolor_title:'🎨 Nickname color',
     nickcolor_desc:'Available to CubiX supporters',
     nickcolor_reset:'Reset (white)',
@@ -3265,6 +3332,7 @@ function applyLang() {
     if (noAccBtn) noAccBtn.innerText = t('no_account');
     applyConsentText('reg-consent-text');
     applyConsentText('google-consent-text');
+    if (typeof ccTranslate === 'function') ccTranslate();
     const resetHintP = document.getElementById('reset-hint-p');
     if (resetHintP) resetHintP.innerText = t('reset_hint');
     const backLoginBtn = document.getElementById('back-login-btn');
@@ -4066,5 +4134,25 @@ function openFull(u){document.getElementById('viewer').style.display='flex';docu
             </div>
         </div>
     </div>    
+<style>
+    .cc-btn { padding:11px 20px; border-radius:10px; border:1px solid #888; background:#222; color:#fff; font-size:15px; cursor:pointer; font-family:Door,Arial,sans-serif; min-height:44px; transition:0.2s; }
+    .cc-btn:hover { background:#3a3a3a; border-color:#fff; }
+</style>
+<div id="cc-banner" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:2000;background:rgba(12,12,12,0.98);border-top:1px solid #444;padding:14px 16px;">
+    <div style="max-width:900px;margin:0 auto;display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
+        <div id="cc-text" style="flex:1;min-width:240px;font-size:14px;color:#ccc;line-height:1.5;text-align:left;"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button id="cc-btn-nec" class="cc-btn" onclick="ccChoose('necessary')"></button>
+            <button id="cc-btn-all" class="cc-btn" onclick="ccChoose('all')"></button>
+        </div>
+    </div>
+</div>
+<div id="cc-footer" style="text-align:center;padding:10px 10px 50px;font-size:13px;color:#555;">
+    <a id="cc-open" href="#" onclick="ccOpen();return false;" style="color:#777;text-decoration:underline;"></a>
+    &nbsp;·&nbsp;
+    <a id="cc-priv" href="PRIVACY_POLICY.html" target="_blank" style="color:#777;text-decoration:underline;"></a>
+    &nbsp;·&nbsp;
+    <a href="EULA_TOS.html" target="_blank" style="color:#777;text-decoration:underline;">EULA</a>
+</div>
 </body>
 </html>
