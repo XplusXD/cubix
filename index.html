@@ -648,6 +648,7 @@
         .gi-half.empty { border-style:dashed; border-color:#333; color:#555; font-size:26px; }
         .gi-half img { width:100%; height:100%; object-fit:cover; display:block; }
         .gi-flag { position:absolute; left:3px; bottom:3px; background:rgba(0,0,0,0.7); color:#fff; font-size:10px; padding:1px 5px; border-radius:5px; }
+        .gi-orientmark { position:absolute; left:3px; top:3px; background:rgba(41,128,185,0.9); font-size:12px; padding:0 4px; border-radius:5px; }
         .gi-blurmark { position:absolute; right:3px; top:3px; background:rgba(142,68,173,0.9); font-size:12px; padding:0 4px; border-radius:5px; }
         #gi-modal .modal-box { max-width:480px; }
         #gi-modal .gi-prev { width:100%; max-height:46vh; object-fit:contain; background:#000; border-radius:12px; margin:8px 0 6px; }
@@ -2736,6 +2737,7 @@ function ccRenderKofiHolder() {
 
 let _ccStarted = false;
 function ccTranslate() {
+    if (!document.getElementById('cc-text')) return; // баннер ещё не создан — повторим на событии load
     const priv = `<a href="PRIVACY_POLICY.html" target="_blank" style="color:#7c9cff;text-decoration:underline;">${t('consent_privacy')}</a>`;
     document.getElementById('cc-text').innerHTML = t('cc_text').replace('{privacy}', priv);
     document.getElementById('cc-btn-nec').innerText = t('cc_nec');
@@ -3723,7 +3725,7 @@ function initGameImagesAdmin() {
                 if (!it || !it.url) return;
                 const pos = Number(it.pos !== undefined ? it.pos : k.slice(1));
                 if (!pos) return;
-                _giData[l][pos] = { url: it.url, path: it.path || '', blur: it.blur === true };
+                _giData[l][pos] = { url: it.url, path: it.path || '', blur: it.blur === true, orient: it.orient === 'v' ? 'v' : 'h', w: it.w || 0, h: it.h || 0, man: it.man === true };
             });
         });
         renderGameImagesAdmin();
@@ -3764,62 +3766,83 @@ function giParseName(name) {
     return { pos, lang: (m[2] === 'rus' || m[2] === 'ru') ? 'ru' : 'en' };
 }
 
-// Основная картинка: до 2048 px (PNG остаётся PNG, остальное -> JPEG). Маленькая — без изменений.
+// Основная картинка: до 2048 px (PNG остаётся PNG, остальное -> JPEG).
+// Лимит Storage-правил 5 МБ: если файл всё равно больше ~4.5 МБ, пережимаем в JPEG (прозрачность теряется).
 async function giPrepare(file, compress) {
     const isPng = file.type === 'image/png';
-    const ext = isPng ? 'png' : 'jpg';
-    if (!compress) return { blob: file, ext, type: file.type };
+    let res = { blob: file, ext: isPng ? 'png' : 'jpg', type: file.type };
+    const LIMIT = 4.5 * 1024 * 1024;
+    let bmp = null;
     try {
-        const bmp = await createImageBitmap(file);
-        const scale = Math.min(1, 2048 / Math.max(bmp.width, bmp.height));
-        if (scale === 1) { bmp.close && bmp.close(); return { blob: file, ext, type: file.type }; }
-        const c = document.createElement('canvas');
-        c.width = Math.round(bmp.width * scale);
-        c.height = Math.round(bmp.height * scale);
-        c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
-        bmp.close && bmp.close();
-        const type = isPng ? 'image/png' : 'image/jpeg';
-        const blob = await new Promise(res => c.toBlob(res, type, 0.9));
-        if (!blob) throw new Error('toBlob failed');
-        return { blob, ext, type };
+        bmp = await createImageBitmap(file);
+        let scale = compress ? Math.min(1, 2048 / Math.max(bmp.width, bmp.height)) : 1;
+        if (scale < 1) {
+            const c = document.createElement('canvas');
+            c.width = Math.round(bmp.width * scale);
+            c.height = Math.round(bmp.height * scale);
+            c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+            const type = isPng ? 'image/png' : 'image/jpeg';
+            const blob = await new Promise(r => c.toBlob(r, type, 0.9));
+            if (blob) res = { blob, ext: isPng ? 'png' : 'jpg', type };
+        }
+        // слишком тяжёлый файл -> JPEG, при необходимости чуть уменьшаем
+        let tries = 0;
+        while (res.blob.size > LIMIT && tries < 4) {
+            const k = Math.min(1, (compress ? 2048 : 4096) / Math.max(bmp.width, bmp.height)) * Math.pow(0.8, tries);
+            const c = document.createElement('canvas');
+            c.width = Math.max(1, Math.round(bmp.width * k));
+            c.height = Math.max(1, Math.round(bmp.height * k));
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, c.width, c.height);
+            ctx.drawImage(bmp, 0, 0, c.width, c.height);
+            const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.88));
+            if (!blob) break;
+            res = { blob, ext: 'jpg', type: 'image/jpeg' };
+            tries++;
+        }
     } catch (e) {
-        console.warn('Сжатие не удалось, грузим оригинал', e);
-        return { blob: file, ext, type: file.type };
+        console.warn('Подготовка картинки не удалась, грузим оригинал', e);
     }
+    if (bmp && bmp.close) bmp.close();
+    return res;
 }
 
-// Маленькое превью (~160 px) для админки, чтобы не качать полные картинки
+// Маленькое превью (~160 px) для админки + размеры оригинала (для определения ориентации)
 async function giMakeThumb(file) {
     try {
         const bmp = await createImageBitmap(file);
-        const s = 160 / Math.max(bmp.width, bmp.height);
+        const w = bmp.width, h = bmp.height;
+        const s = Math.min(1, 160 / Math.max(w, h));
         const c = document.createElement('canvas');
-        c.width = Math.max(1, Math.round(bmp.width * Math.min(1, s)));
-        c.height = Math.max(1, Math.round(bmp.height * Math.min(1, s)));
+        c.width = Math.max(1, Math.round(w * s));
+        c.height = Math.max(1, Math.round(h * s));
         const ctx = c.getContext('2d');
         ctx.fillStyle = '#111';
         ctx.fillRect(0, 0, c.width, c.height);
         ctx.drawImage(bmp, 0, 0, c.width, c.height);
         bmp.close && bmp.close();
-        return c.toDataURL('image/jpeg', 0.7);
-    } catch (e) { return ''; }
+        return { thumb: c.toDataURL('image/jpeg', 0.7), w, h };
+    } catch (e) { return { thumb: '', w: 0, h: 0 }; }
 }
 
 async function giUploadOne(pos, lang, file) {
     const compress = document.getElementById('gi-compress').checked;
     const prep = await giPrepare(file, compress);
-    const thumb = await giMakeThumb(file);
+    const info = await giMakeThumb(file);
+    const orient = info.h > info.w ? 'v' : 'h';   // автоопределение: по длинной стороне (квадрат = горизонтальная)
     const path = `gameImages/${lang}/${giKey(pos)}-${Date.now()}.${prep.ext}`;
     const ref = storage.ref(path);
     await ref.put(prep.blob, { contentType: prep.type });
     const url = await ref.getDownloadURL();
     const old = _giData[lang][pos];
     const blur = old ? old.blur === true : false;
+    const rec = { pos, url, path, blur, orient, w: info.w, h: info.h, man: false };
     const updates = {};
-    updates[`gameImages/${lang}/${giKey(pos)}`] = { pos, url, path, blur };
-    updates[`gameImagesThumbs/${lang}/${giKey(pos)}`] = thumb || null;
+    updates[`gameImages/${lang}/${giKey(pos)}`] = rec;
+    updates[`gameImagesThumbs/${lang}/${giKey(pos)}`] = info.thumb || null;
     await db.ref().update(updates);
-    _giData[lang][pos] = { url, path, blur };
+    _giData[lang][pos] = { url, path, blur, orient, w: info.w, h: info.h, man: false };
     if (old && old.path) storage.ref(old.path).delete().catch(() => {});
 }
 
@@ -3917,7 +3940,7 @@ async function giMove(lang, from, rawTo) {
         const node = {}, tn = {};
         Object.keys(_giData[l]).forEach(p => {
             const np = mapping[p], it = _giData[l][p];
-            node[giKey(np)] = { pos: np, url: it.url, path: it.path || '', blur: it.blur === true };
+            node[giKey(np)] = { pos: np, url: it.url, path: it.path || '', blur: it.blur === true, orient: it.orient === 'v' ? 'v' : 'h', w: it.w || 0, h: it.h || 0, man: it.man === true };
             const th = _giThumbs[l][p];
             if (th) tn[giKey(np)] = th;
         });
@@ -3949,6 +3972,23 @@ async function giDelete(lang, pos) {
     } catch (e) { console.error(e); alert('Не удалось удалить'); }
 }
 
+// Ориентация: вручную ('h' / 'v') или авто (null -> по размерам файла)
+async function giSetOrient(lang, pos, val) {
+    const it = _giData[lang][pos];
+    if (!it) return;
+    const base = `gameImages/${lang}/${giKey(pos)}`;
+    const updates = {};
+    if (val === null) {
+        updates[base + '/orient'] = it.h > it.w ? 'v' : 'h';
+        updates[base + '/man'] = false;
+    } else {
+        updates[base + '/orient'] = val;
+        updates[base + '/man'] = true;
+    }
+    try { await db.ref().update(updates); }
+    catch (e) { console.error(e); alert('Не удалось сохранить ориентацию'); }
+}
+
 // ── Окно действий ──
 function giOpen(lang, pos) {
     if (!_giData[lang][pos]) { giPickFile(lang, pos); return; }
@@ -3972,6 +4012,12 @@ function giRenderModal() {
         <h2 style="font-size:22px;margin:0;">Позиция ${pos} · ${lang === 'ru' ? '🇷🇺 RU' : '🇬🇧 EN'}</h2>
         <img class="gi-prev" src="${esc(it.url)}" alt="">
         <button class="gi-btn ${it.blur ? 'on' : ''}" onclick="giToggleBlur('${lang}',${pos})">🌫 Блюр: ${it.blur ? 'ВКЛ (нажми, чтобы выключить)' : 'выкл (нажми, чтобы включить)'}</button>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+            <button class="gi-btn ${it.orient !== 'v' ? 'on' : ''}" style="margin-top:0;" onclick="giSetOrient('${lang}',${pos},'h')">↔ Горизонтально</button>
+            <button class="gi-btn ${it.orient === 'v' ? 'on' : ''}" style="margin-top:0;" onclick="giSetOrient('${lang}',${pos},'v')">↕ Вертикально</button>
+        </div>
+        <div style="color:#777;font-size:12px;margin-top:4px;">${it.man ? 'Задано вручную.' : 'Определено автоматически по размеру файла' + (it.w ? ` (${it.w}×${it.h})` : '') + '.'}
+            ${it.man ? `<a href="#" style="color:#7c9cff;" onclick="giSetOrient('${lang}',${pos},null);return false;">↺ вернуть авто</a>` : ''}</div>
         <button class="gi-btn blue" onclick="giPickFile('${lang}',${pos})">🔄 Заменить файл</button>
         <div class="gi-row">
             <input type="number" min="1" max="999" inputmode="numeric" placeholder="Новая позиция" id="gi-move-input"
@@ -4014,7 +4060,7 @@ function renderGameImagesAdmin() {
         const src = _giThumbs[lang][pos] || it.url;
         return `<div class="gi-half ${lang}" onclick="giOpen('${lang}',${pos})">
             <img src="${esc(src)}" loading="lazy" alt="">
-            <span class="gi-flag">${flag}</span>${it.blur ? '<span class="gi-blurmark">🌫</span>' : ''}
+            <span class="gi-flag">${flag}</span>${it.blur ? '<span class="gi-blurmark">🌫</span>' : ''}${it.orient === 'v' ? '<span class="gi-orientmark">↕</span>' : ''}
         </div>`;
     };
 
