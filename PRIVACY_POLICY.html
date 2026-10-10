@@ -5,109 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Privacy Policy CubiX</title>
 <style>
-  :root {
-    --bg: #0f1115;
-    --panel: #171a21;
-    --text: #e6e8eb;
-    --muted: #9aa0aa;
-    --accent: #7c9cff;
-    --border: #262a33;
-  }
+  :root { --bg:#0f1115; --panel:#171a21; --text:#e6e8eb; --muted:#9aa0aa; --accent:#7c9cff; --border:#262a33; }
   * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-    line-height: 1.65;
-  }
-  .wrap {
-    max-width: 780px;
-    margin: 0 auto;
-    padding: 48px 24px 96px;
-    position: relative;
-  }
-  .panel {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 40px clamp(20px, 5vw, 56px);
-  }
-  .top-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  a.back {
-    color: var(--muted);
-    text-decoration: none;
-    font-size: 14px;
-  }
-  a.back:hover { color: var(--accent); }
-  .lang-switch {
-    display: inline-flex;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 3px;
-    gap: 2px;
-  }
-  .lang-switch button {
-    border: none;
-    background: transparent;
-    color: var(--muted);
-    font-size: 13px;
-    font-weight: 600;
-    padding: 6px 14px;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-  }
-  .lang-switch button.active {
-    background: var(--accent);
-    color: #0f1115;
-  }
-  .lang-switch button:not(.active):hover {
-    color: var(--text);
-  }
-  h1 {
-    font-size: 28px;
-    margin: 0 0 4px;
-  }
-  .updated {
-    color: var(--muted);
-    font-size: 14px;
-    margin-bottom: 32px;
-  }
-  h2 {
-    font-size: 19px;
-    margin-top: 36px;
-    margin-bottom: 12px;
-    color: var(--accent);
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 8px;
-  }
-  p, li { color: #cdd1d8; font-size: 15.5px; }
-  ul { padding-left: 22px; }
-  hr {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 40px 0 20px;
-  }
-  em { color: var(--muted); font-size: 14px; }
-  strong { color: var(--text); }
-  code {
-    background: #1f232c;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 13px;
-  }
-  [data-lang="en"] { display: none; }
-  body.lang-en [data-lang="ru"] { display: none; }
-  body.lang-en [data-lang="en"] { display: block; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif; line-height:1.65; }
+  .wrap { max-width:780px; margin:0 auto; padding:48px 24px 96px; position:relative; }
+  .panel { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:40px clamp(20px,5vw,56px); }
+  .top-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; gap:12px; flex-wrap:wrap; }
+  a.back { color:var(--muted); text-decoration:none; font-size:14px; }
+  a.back:hover { color:var(--accent); }
+  .lang-switch { display:inline-flex; background:var(--panel); border:1px solid var(--border); border-radius:999px; padding:3px; gap:2px; }
+  .lang-switch button { border:none; background:transparent; color:var(--muted); font-size:13px; font-weight:600; padding:6px 14px; border-radius:999px; cursor:pointer; transition:background .15s,color .15s; }
+  .lang-switch button.active { background:var(--accent); color:#0f1115; }
+  .lang-switch button:not(.active):hover { color:var(--text); }
+  h1 { font-size:28px; margin:0 0 4px; }
+  h2 { font-size:19px; margin-top:36px; margin-bottom:12px; color:var(--accent); border-bottom:1px solid var(--border); padding-bottom:8px; }
+  p, li { color:#cdd1d8; font-size:15.5px; }
+  ul { padding-left:22px; }
+  li { margin-bottom:6px; }
+  hr { border:none; border-top:1px solid var(--border); margin:40px 0 20px; }
+  em { color:var(--muted); font-size:14px; }
+  strong { color:var(--text); }
+  a { color:var(--accent); }
+  .todo { background:#5a4a00; color:#ffe27a; padding:1px 6px; border-radius:4px; }
+  [data-lang] { display:none; }
+  [data-lang].show { display:block; }
 </style>
 </head>
 <body>
@@ -115,108 +36,141 @@
   <div class="top-row">
     <a class="back" href="index.html">← На главную / Back</a>
     <div class="lang-switch">
-      <button id="btn-ru" class="active" onclick="setLang('ru')">RU</button>
+      <button id="btn-ru" onclick="setLang('ru')">RU</button>
       <button id="btn-en" onclick="setLang('en')">ENG</button>
     </div>
   </div>
   <div class="panel">
     <div data-lang="ru">
-      <h1>Политика конфиденциальности</h1>
-<p><em>Дата последнего обновления: 15 августа 2026</em></p>
-<p>Эта политика объясняет, какие данные собирает игра <strong>CubiX</strong> ("Игра"), для чего они используются и как ими управлять. Разработчик — <strong>Xplus (Xplus Company)</strong> ("Автор", "мы").</p>
-<h2>1. Какие данные мы собираем</h2>
-<p>При входе через ваш аккаунт Google (OAuth) мы получаем и сохраняем:
-- адрес электронной почты, связанный с вашим Google-аккаунтом;
-- никнейм, который вы используете в Игре;
-- игровой прогресс и статистику (достижения, счётчики использований способностей и т.п.);
-- статус "Сапортер" (если вы поддержали проект и Автор вручную включил вам эту функцию).</p>
-<p><strong>Мы не получаем и не храним ваш пароль</strong> — вход полностью обрабатывается Google, у нас нет к нему доступа.</p>
-<p>Мы не собираем данные о платежах напрямую — покупки/донаты происходят на отдельном сайте, вне Игры, и обрабатываются платёжной платформой этого сайта, а не Автором.</p>
-<h2>2. Для чего используются данные</h2>
+<h1>Политика конфиденциальности</h1>
+<p><em>Дата последнего обновления: 9 октября 2026</em></p>
+<p>Эта политика объясняет, какие персональные данные обрабатываются, когда вы пользуетесь игрой <strong>CubiX</strong> («Игра») и её сайтом («Сайт»), для чего и какие у вас есть права.</p>
+<p><strong>Ответственный за обработку данных:</strong> Xplus, частный разработчик («Автор», «мы»). Полное имя и почтовый адрес указаны в <a href="IMPRESSUM.html">Impressum</a>. Контакты: <strong>Email: xplus.official10@gmail.com<br>Discord: _xplus</strong></p>
+
+<h2>1. Какие данные мы обрабатываем</h2>
 <ul>
-<li>для идентификации вашей учётной записи между сессиями и устройствами;</li>
-<li>для сохранения игрового прогресса, достижений и настроек;</li>
-<li>для отображения никнеймов в игровых списках (например, "доска почёта");</li>
-<li>для включения функции "Сапортер", если вы поддержали проект;</li>
-<li>для модерации — бана аккаунта при читерстве или нарушении правил поведения.</li>
+<li><strong>Аккаунт.</strong> Вы можете войти через аккаунт Google (OAuth) или зарегистрироваться по e-mail и паролю (с подтверждением почты). Мы обрабатываем: адрес электронной почты, никнейм (и выбранный цвет ника), идентификатор аккаунта, выбранный аватар.</li>
+<li><strong>Пароль.</strong> Мы не видим ваш пароль. При входе через Google им управляет Google. При регистрации по e-mail пароль обрабатывается и хранится в защищённом (хэшированном) виде сервисом Firebase Authentication (Google).</li>
+<li><strong>Игровые данные.</strong> Прогресс и статистика (достижения, счётчики способностей, кубки и ранг), статус «Сапортер» (если вы поддержали проект и Автор включил его вручную), настройки, а также статус блокировки и её причина, если аккаунт заблокирован.</li>
+<li><strong>Социальные функции.</strong> Список друзей и заявки, статус «в сети», ваш никнейм, идентификатор и аватар, видимые другим игрокам; никнейм в игровых списках (например, «доска почёта»).</li>
+<li><strong>Галерея.</strong> Изображения и описания, которые вы загружаете. После проверки модератором они показываются другим посетителям вместе с вашим никнеймом и идентификатором.</li>
+<li><strong>Технические данные.</strong> При открытии Сайта и во время игры серверы используемых нами сервисов получают ваш IP-адрес и технические данные браузера/устройства. Мы не используем их для составления профилей.</li>
+<li><strong>Данные на вашем устройстве.</strong> Сайт сохраняет в localStorage язык, настройку блюра, ваш выбор в баннере cookie и служебные метки времени. Игра может хранить часть данных (например, счётчики достижений) локально через PlayerPrefs и синхронизировать их с сервером.</li>
+<li><strong>Платежи.</strong> Мы не собираем платёжные данные. Донаты проходят на отдельном сайте Ko-fi вне Игры и обрабатываются его платёжной платформой.</li>
 </ul>
-<h2>3. Где и как хранятся данные</h2>
-<p>Данные хранятся в базе данных Firebase (Google). Часть данных (счётчики достижений и т.п.) также может временно храниться локально на вашем устройстве через PlayerPrefs и синхронизироваться с сервером.</p>
-<h2>4. Передача данных третьим лицам</h2>
-<p>Мы не продаём и не передаём ваши данные третьим лицам в рекламных целях. Данные обрабатываются через инфраструктуру Google (Firebase, Google OAuth) в соответствии с их собственными политиками конфиденциальности.</p>
-<h2>5. Хранение и удаление данных</h2>
-<p>Данные хранятся, пока у вас есть аккаунт в Игре, либо до вашего запроса на удаление. Вы можете запросить удаление своих данных (email, ник, прогресс), написав Автору: <strong>Gmail: xplus.official10@gmail.com
-Discord: _xplus</strong>. Обратите внимание: при бане за читерство прогресс и связанные данные могут быть удалены/заблокированы без возможности восстановления (см. Пользовательское соглашение).</p>
-<h2>6. Возраст пользователей</h2>
-<p>Игра не предназначена для детей младше [13/16 — укажи возраст согласно нужному региону]. Если вам меньше этого возраста, пожалуйста, не используйте функции входа через аккаунт.</p>
+
+<h2>2. Цели и правовые основания (ст. 6 GDPR)</h2>
+<ul>
+<li>Аккаунт, сохранение прогресса, достижения, друзья, галерея, списки игроков, многопользовательская игра — <strong>исполнение договора</strong> (ст. 6(1)(b)).</li>
+<li>Включение статуса «Сапортер» после доната — исполнение договора (ст. 6(1)(b)).</li>
+<li>Защита от читов, ботов и злоупотреблений, модерация и блокировка, защита от автоматических регистраций (Cloudflare Turnstile), безопасность Сайта — <strong>законный интерес</strong> (ст. 6(1)(f)).</li>
+<li>Виджет Ko-fi на Сайте — только с вашего <strong>согласия</strong> (ст. 6(1)(a)); его можно отозвать в любой момент через «Настройки cookie» внизу Сайта.</li>
+<li>Хранение языка и настроек на вашем устройстве — технически необходимо для работы Сайта (§ 25(2) TDDDG).</li>
+</ul>
+
+<h2>3. Кто получает данные</h2>
+<p>Мы не продаём данные и не используем их для рекламы. Данные обрабатываются сервисами, без которых Игра и Сайт не работают, каждый — по своей собственной политике конфиденциальности:</p>
+<ul>
+<li><strong>Google (Firebase Authentication, Realtime Database, Cloud Storage; вход через Google).</strong> База данных Realtime Database расположена в регионе ЕС (europe-west1).</li>
+<li><strong>Cloudflare</strong> (Turnstile) — проверка, что запрос исходит от человека.</li>
+<li><strong>GitHub Pages</strong> (GitHub, Inc.) — хостинг Сайта и этих документов.</li>
+<li><strong>Photon</strong> (Exit Games) — сервис для многопользовательской игры; получает технические данные соединения, ник и данные комнат.</li>
+<li><strong>Ko-fi</strong> — только если вы разрешили виджет или сами перешли на ko-fi.com; тогда действуют его правила.</li>
+</ul>
+
+<h2>4. Передача за пределы ЕС</h2>
+<p>Часть этих сервисов может обрабатывать данные за пределами ЕС, в том числе в США. Как правило, это происходит на основании механизмов, которые предусматривают сами провайдеры (например, стандартные договорные положения или EU–US Data Privacy Framework). Подробности — в политиках соответствующих сервисов.</p>
+
+<h2>5. Хранение и удаление</h2>
+<p>Данные хранятся, пока существует ваш аккаунт, либо до запроса на удаление. Вы можете удалить аккаунт в разделе «Профиль» на Сайте или написать нам; по запросу мы также удалим загруженные вами изображения. Часть данных может временно сохраняться в резервных копиях и журналах сервисов-провайдеров. При блокировке за читерство прогресс и связанные данные могут быть удалены или заблокированы без возможности восстановления (см. Пользовательское соглашение).</p>
+
+<h2>6. Возраст</h2>
+<p>Игра и Сайт не предназначены для детей младше 16 лет. Если вам меньше 16, пожалуйста, не создавайте аккаунт и не используйте функции входа.</p>
+
 <h2>7. Ваши права</h2>
-<p>В зависимости от вашего региона (например, если вы находитесь в ЕС) вы можете иметь право на доступ к своим данным, их исправление или удаление. Чтобы воспользоваться этим правом, напишите: <strong>Gmail: xplus.official10@gmail.com
-Discord: _xplus</strong>.</p>
+<p>Вы вправе: получить доступ к своим данным, исправить их, удалить, ограничить обработку, получить данные в переносимом формате, возразить против обработки на основании законного интереса и отозвать данное согласие в любое время (это не влияет на законность обработки до отзыва). Для этого напишите нам: <strong>Email: xplus.official10@gmail.com<br>Discord: _xplus</strong></p>
+<p>Вы также вправе подать жалобу в надзорный орган по защите данных — например, в орган вашей страны или федеральной земли проживания, либо в орган, компетентный для Автора в Германии.</p>
+
 <h2>8. Изменения политики</h2>
-<p>Мы можем обновлять эту политику. Актуальная версия всегда доступна по ссылке: <strong>https://xplus228.github.io/cubix/PRIVACY_POLICY.html</strong>.</p>
+<p>Мы можем обновлять эту политику. Актуальная версия всегда доступна по ссылке: <strong>https://xplusxd.github.io/cubix/PRIVACY_POLICY.html</strong>. О существенных изменениях мы сообщим на Сайте или в Игре.</p>
+
 <h2>9. Контакты</h2>
-<p>По всем вопросам о данных: <strong>Gmail: xplus.official10@gmail.com
-Discord: _xplus</strong></p>
+<p>По всем вопросам о данных: <strong>Email: xplus.official10@gmail.com<br>Discord: _xplus</strong>. Реквизиты Автора — в <a href="IMPRESSUM.html">Impressum</a>.</p>
 <hr />
     </div>
     <div data-lang="en">
-      <h1>Privacy Policy</h1>
-<p><em>Last updated: August 15, 2026</em></p>
-<p>This policy explains what data the game <strong>CubiX</strong> ("Game") collects, how it is used, and how you can manage it. The developer is <strong>Xplus (Xplus Company)</strong> ("Author", "we").</p>
-<h2>1. What Data We Collect</h2>
-<p>When you log in via your Google account (OAuth), we receive and store:
-- the email address associated with your Google account;
-- the nickname you use in the Game;
-- your game progress and statistics (achievements, ability-usage counters, etc.);
-- your "Supporter" status (if you supported the project and the Author manually enabled this feature for you).</p>
-<p><strong>We do not receive or store your password</strong> — login is handled entirely by Google; we have no access to it.</p>
-<p>We do not collect payment data directly — purchases/donations take place on a separate website, outside the Game, and are processed by that website's payment platform, not by the Author.</p>
-<h2>2. How the Data Is Used</h2>
+<h1>Privacy Policy</h1>
+<p><em>Last updated: October 9, 2026</em></p>
+<p>This policy explains which personal data is processed when you use the game <strong>CubiX</strong> ("Game") and its website ("Website"), why, and what rights you have.</p>
+<p><strong>Controller:</strong> Xplus, an individual developer ("Author", "we"). Full name and postal address are given in the <a href="IMPRESSUM.html">Impressum</a>. Contact: <strong>Email: xplus.official10@gmail.com<br>Discord: _xplus</strong></p>
+
+<h2>1. Data We Process</h2>
 <ul>
-<li>to identify your account across sessions and devices;</li>
-<li>to save your game progress, achievements, and settings;</li>
-<li>to display nicknames in in-game lists (e.g., "Hall of Fame");</li>
-<li>to enable the "Supporter" feature, if you supported the project;</li>
-<li>for moderation — banning an account for cheating or rule violations.</li>
+<li><strong>Account.</strong> You can sign in with your Google account (OAuth) or register with an email address and password (with email verification). We process: your email address, nickname (and chosen nickname color), account ID, and selected avatar.</li>
+<li><strong>Password.</strong> We cannot see your password. With Google sign-in, Google manages it. With email registration, the password is processed and stored in protected (hashed) form by Firebase Authentication (Google).</li>
+<li><strong>Game data.</strong> Progress and statistics (achievements, ability counters, trophies and rank), your "Supporter" status (if you supported the project and the Author enabled it manually), settings, and ban status and reason if your account is banned.</li>
+<li><strong>Social features.</strong> Friends list and requests, online status, and your nickname, ID and avatar as visible to other players; nicknames in in-game lists (e.g. "Hall of Fame").</li>
+<li><strong>Gallery.</strong> Images and descriptions you upload. After moderator review they are shown to other visitors together with your nickname and ID.</li>
+<li><strong>Technical data.</strong> When you open the Website or play, the servers of the services we use receive your IP address and technical browser/device data. We do not use it to build profiles.</li>
+<li><strong>Data on your device.</strong> The Website stores your language, blur setting, your choice in the cookie banner, and internal timestamps in localStorage. The Game may store some data (e.g. achievement counters) locally via PlayerPrefs and sync it with the server.</li>
+<li><strong>Payments.</strong> We do not collect payment data. Donations take place on the separate Ko-fi website, outside the Game, and are processed by its payment platform.</li>
 </ul>
-<h2>3. Where and How Data Is Stored</h2>
-<p>Data is stored in a Firebase (Google) database. Some data (e.g., achievement counters) may also be temporarily stored locally on your device via PlayerPrefs and synced with the server.</p>
-<h2>4. Sharing Data with Third Parties</h2>
-<p>We do not sell or share your data with third parties for advertising purposes. Data is processed through Google's infrastructure (Firebase, Google OAuth) in accordance with their own privacy policies.</p>
-<h2>5. Data Retention and Deletion</h2>
-<p>Data is retained as long as you have an account in the Game, or until you request deletion. You can request deletion of your data (email, nickname, progress) by contacting the Author: <strong>Gmail: xplus.official10@gmail.com
-Discord: _xplus</strong>. Note: if banned for cheating, progress and related data may be deleted/blocked without the possibility of recovery (see the End User License Agreement).</p>
-<h2>6. Age of Users</h2>
-<p>The Game is not intended for children under 16. If you are under this age, please do not use the account login features.</p>
+
+<h2>2. Purposes and Legal Bases (Art. 6 GDPR)</h2>
+<ul>
+<li>Account, saving progress, achievements, friends, gallery, player lists, multiplayer — <strong>performance of a contract</strong> (Art. 6(1)(b)).</li>
+<li>Enabling "Supporter" status after a donation — performance of a contract (Art. 6(1)(b)).</li>
+<li>Anti-cheat, bot and abuse prevention, moderation and bans, protection against automated sign-ups (Cloudflare Turnstile), Website security — <strong>legitimate interests</strong> (Art. 6(1)(f)).</li>
+<li>The Ko-fi widget on the Website — only with your <strong>consent</strong> (Art. 6(1)(a)); you can withdraw it at any time via "Cookie settings" at the bottom of the Website.</li>
+<li>Storing language and settings on your device is strictly necessary for the Website to work (§ 25(2) TDDDG).</li>
+</ul>
+
+<h2>3. Who Receives Data</h2>
+<p>We do not sell data or use it for advertising. Data is processed by services the Game and Website cannot work without, each under its own privacy policy:</p>
+<ul>
+<li><strong>Google (Firebase Authentication, Realtime Database, Cloud Storage; Google sign-in).</strong> The Realtime Database is located in an EU region (europe-west1).</li>
+<li><strong>Cloudflare</strong> (Turnstile) — verifies that a request comes from a human.</li>
+<li><strong>GitHub Pages</strong> (GitHub, Inc.) — hosts the Website and these documents.</li>
+<li><strong>Photon</strong> (Exit Games) — multiplayer service; receives technical connection data, nickname and room data.</li>
+<li><strong>Ko-fi</strong> — only if you allowed the widget or follow a link to ko-fi.com; its own rules then apply.</li>
+</ul>
+
+<h2>4. Transfers Outside the EU</h2>
+<p>Some of these services may process data outside the EU, including in the United States. This usually relies on safeguards provided by the providers themselves (for example Standard Contractual Clauses or the EU–US Data Privacy Framework). See the respective providers' policies for details.</p>
+
+<h2>5. Retention and Deletion</h2>
+<p>Data is kept as long as your account exists, or until you request deletion. You can delete your account in the "Profile" section of the Website or contact us; on request we will also delete images you uploaded. Some data may remain temporarily in provider backups and logs. If you are banned for cheating, progress and related data may be deleted or blocked without the possibility of recovery (see the End User License Agreement).</p>
+
+<h2>6. Age</h2>
+<p>The Game and Website are not intended for children under 16. If you are under 16, please do not create an account or use sign-in features.</p>
+
 <h2>7. Your Rights</h2>
-<p>Depending on your region (e.g., if you are in the EU), you may have the right to access, correct, or delete your data. To exercise this right, contact: <strong>Gmail: xplus.official10@gmail.com
-Discord: _xplus</strong>.</p>
+<p>You have the right to access your data, correct it, have it erased, restrict processing, receive it in a portable format, object to processing based on legitimate interests, and withdraw consent at any time (without affecting processing before withdrawal). To exercise these rights, contact: <strong>Email: xplus.official10@gmail.com<br>Discord: _xplus</strong></p>
+<p>You may also lodge a complaint with a data protection supervisory authority, for example in your country or federal state of residence, or the authority responsible for the Author in Germany.</p>
+
 <h2>8. Changes to This Policy</h2>
-<p>We may update this policy. The current version is always available at: <strong>https://xplus228.github.io/cubix/PRIVACY_POLICY.html</strong>.</p>
+<p>We may update this policy. The current version is always available at: <strong>https://xplusxd.github.io/cubix/PRIVACY_POLICY.html</strong>. We will announce material changes on the Website or in the Game.</p>
+
 <h2>9. Contact</h2>
-<p>For any questions about your data: <strong>Gmail: xplus.official10@gmail.com
-Discord: _xplus</strong></p>
+<p>For any questions about your data: <strong>Email: xplus.official10@gmail.com<br>Discord: _xplus</strong>. The Author's details are in the <a href="IMPRESSUM.html">Impressum</a>.</p>
 <hr />
     </div>
   </div>
 </div>
 <script>
+var TITLES = {ru:'Политика конфиденциальности CubiX', en:'Privacy Policy CubiX'};
 function setLang(lang) {
-  document.body.classList.toggle('lang-en', lang === 'en');
+  document.querySelectorAll('[data-lang]').forEach(function(el) { el.classList.toggle('show', el.getAttribute('data-lang') === lang); });
   document.getElementById('btn-ru').classList.toggle('active', lang === 'ru');
   document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-  document.title = lang === 'en' ? 'Privacy Policy CubiX' : 'Политика конфиденциальности CubiX';
-  localStorage.setItem('cubix-legal-lang', lang);
+  document.title = TITLES[lang];
+  try { localStorage.setItem('cubix-legal-lang', lang); } catch (e) {}
 }
 (function() {
-  const saved = localStorage.getItem('cubix-legal-lang');
-  if (saved) {
-    if (saved === 'en') setLang('en');
-  } else {
-    const detected = navigator.language.startsWith('ru') ? 'ru' : 'en';
-    localStorage.setItem('cubix-legal-lang', detected);
-    if (detected === 'en') setLang('en');
-  }
+  var saved = null;
+  try { saved = localStorage.getItem('cubix-legal-lang'); } catch (e) {}
+  var lang = saved || ((navigator.language || '').toLowerCase().indexOf('ru') === 0 ? 'ru' : 'en');
+  setLang(lang === 'ru' ? 'ru' : 'en');
 })();
 </script>
 </body>
